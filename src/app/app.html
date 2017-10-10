@@ -1,0 +1,42 @@
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>    
+    
+    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: files }"></ng-container>
+    
+    <ng-template #recursiveList let-files>
+
+      <ion-list  style="margin-bottom: 0px;" class="list list-md expand">
+          
+          <ion-grid class="grid" style="padding-bottom: 0px;">
+                <ion-item-group ion-list  *ngFor="let tree of  files" >
+                    <ion-row class="row">
+                        
+                            <button ion-item  (click)="addExpandClass(tree)" (click)="openPage(tree)">
+                              <i *ngIf="tree.children.length==0" class="{{tree.data.menuIcon}}"></i>
+                              <i *ngIf="tree.children.length>0" class="fa fa-plus"></i>  
+                              {{tree.label}}
+                            </button >
+                            <ion-col class="col" *ngIf="isPageExpands.indexOf(tree.data.id)==-1" [class.expand]="true">
+                                <ng-container  *ngTemplateOutlet="recursiveList; context:{ $implicit: tree.children }"></ng-container>     
+                            </ion-col>
+                            
+                    </ion-row>
+                </ion-item-group>
+  
+          </ion-grid>
+  
+        </ion-list>
+      
+    </ng-template>
+
+  </ion-content>
+
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

@@ -1,0 +1,108 @@
+<!--
+  Generated template for the AuthoritiesPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+      <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+    <ion-title>จัดการบทบาทผู้ใช้งาน</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <p-growl [(value)]="msgs" styleClass="registerGrowl"></p-growl>
+    <p-panel header="จัดการบทบาทผู้ใช้งาน" [toggleable]="true">
+      <form [formGroup]="authoritiesform" (ngSubmit)="onSubmit(authoritiesform.value)">
+    
+        <button pButton type="submit" icon="fa-check" label="{{btnLabel}}" class="ui-button-primary" [disabled]="!authoritiesform.valid"></button>
+        <button pButton type="button" icon="fa-refresh" label="Reset" class="ui-button-warning" (click)="resetForm()"></button>
+        <button pButton *ngIf="isModify" type="button" class="ui-button-danger" icon="fa-close" label="Cancle" (click)="cancleUpdate()"></button>
+    
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+    
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-2">
+              ชื่อกลุ่ม *:
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="hidden" formControlName="authorityId" />
+              <input pInputText type="text" formControlName="authority" placeholder="ชื่อกลุ่ม" />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!authoritiesform.controls['authority'].valid&&authoritiesform.controls['authority'].dirty">
+                <i class="fa fa-close"></i> กรุณากรอกชื่อกลุ่ม
+              </div>
+            </div>
+          </div>
+    
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-2">
+              คำอธิบาย :
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea type="text" formControlName="description"></textarea>
+            </div>
+            <div class="ui-grid-col-4"></div>
+          </div>
+    
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-2">
+              สถานะ *:
+            </div>
+            <div class="ui-grid-col-6">
+              <p-inputSwitch onLabel="ใช้งาน" offLabel="ไม่ใช้งาน" formControlName="activeFlag"></p-inputSwitch>
+            </div>
+            <div class="ui-grid-col-4"></div>
+          </div>
+        </div>
+      </form>
+    </p-panel>
+    <br>
+    <p-dataTable 
+    [value]="authoritiesObj" 
+    dataKey="authorityId" 
+    [(selection)]="selectedAuthorities" 
+    [rows]="10" 
+    [paginator]="true"
+    [pageLinks]="5" 
+    [rowsPerPageOptions]="[5,10,20]" 
+    [lazy]="true" 
+    [totalRecords]="totalRecords" 
+    (onLazyLoad)="loadAuthoritiesLazy($event)"
+    [globalFilter]="gb" #dt>
+    
+      <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+      <p-column styleClass="col-button" [style]="{'width': '50px'}">
+        <ng-template pTemplate="header">
+          <button type="button" pButton icon="fa-trash" class="ui-button-danger" (click)="onRemove()"></button>
+        </ng-template>
+        <ng-template let-authoritiesRow="rowData" pTemplate="body">
+          <button type="button" pButton (click)="selectAuthorities(authoritiesRow)" icon="fa-edit"></button>
+        </ng-template>
+      </p-column>
+    
+      <p-column field="authorityId" hidden="true" header="authorityId"></p-column>
+      <p-column field="authority" header="ชื่อกลุ่ม" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+      <p-column field="description" header="คำอธิบาย" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+      <p-column field="activeFlag" header="สถานะ" [filter]="true" filterMatchMode="equals">
+        <ng-template pTemplate="filter" let-col>
+          <p-dropdown [options]="activeFlag" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+            styleClass="ui-column-filter"></p-dropdown>
+        </ng-template>
+    
+        <ng-template let-col let-pthCol="rowData" pTemplate="body">
+          <div *ngIf="pthCol[col.field] == true ;then content else other_content">ไม่พบข้อมูล</div>
+          <ng-template #content>ใช้งาน</ng-template>
+          <ng-template #other_content>ไม่ใช้งาน</ng-template>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+    
+</ion-content>

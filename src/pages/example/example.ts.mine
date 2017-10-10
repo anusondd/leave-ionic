@@ -1,0 +1,32 @@
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ExampleProvider } from './example-service';
+
+/**
+ * Generated class for the ExamplePage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+
+@IonicPage()
+@Component({
+  selector: 'page-example',
+  templateUrl: 'example.html'
+})
+export class ExamplePage {
+  private hello:any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams
+    ,public emampleService: ExampleProvider) {
+  }
+
+  ionViewDidLoad() {
+    /* this.emampleService.getHelloworld().then(result => {
+      console.log("result in component:",result);
+      
+      this.hello = result.detail;
+    }); */
+  }
+
+}

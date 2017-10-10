@@ -1,0 +1,13 @@
+<p-autoComplete #autoCompleteCommon
+    [suggestions]="dropdownOptions.filteredData" 
+    [size]="30" 
+    [minLength]="1" 
+    [dropdown]="true" 
+    [field]="dropdownOptions.fieldLabel"
+    [placeholder]="dropdownOptions.placeholder"
+    emptyMessage="ไม่พบข้อมูล"
+    (onSelect)="onSelectItem($event)" 
+    (completeMethod)="search($event)"
+    (onDropdownClick)="handleDropdownClick()"
+    forceSelection="true">
+</p-autoComplete>

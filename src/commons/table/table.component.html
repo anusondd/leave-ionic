@@ -1,0 +1,27 @@
+<p-dataTable 
+  [value]="tableOptions.dataList"
+  dataKey="{{tableOptions.dataKey}}"
+  [(selection)]="tableOptions.selectedObject"
+  selectionMode="tableOptions.selectionMode"
+  (onRowSelect)="onRowSelect($event)" 
+
+  [rows]="tableOptions.rows" 
+  [paginator]="tableOptions.paginator"
+  [pageLinks]="tableOptions.pageLinks" 
+  [rowsPerPageOptions]="tableOptions.rowsPerPageOptions"
+
+  [lazy]="true"
+  [totalRecords]="tableOptions.totalRecords" 
+  (onLazyLoad)="loadDataTableLazy($event)"
+>
+  <p-column *ngFor = "let tbCol of tableOptions.tableColumnOptions"
+
+    field="{{tbCol.field}}" 
+    header="{{tbCol.header}}" 
+    filterPlaceholder="{{tbCol.filterPlaceholder}}"
+
+    [sortable]="tbCol.sortable" 
+    [filter]="tbCol.filter">
+  </p-column>
+
+</p-dataTable>

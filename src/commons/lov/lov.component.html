@@ -1,0 +1,6 @@
+<p-dialog header="{{lovOptions.title}}" [(visible)]="display" (onHide)="onClose($event)" modal="true">
+  <app-table #tableLOV (onRowSelectEvent)="onRowSelect($event)"></app-table>
+  <p-footer>
+     <button pButton type="button" class="ui-button-danger" icon="fa-close" label="ปิด" (click)="onClose($event)"></button>
+  </p-footer>
+</p-dialog>

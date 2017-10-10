@@ -1,0 +1,8 @@
+<p-blockUI [blocked]="blocked"></p-blockUI>
+
+<p-fileUpload #fileUpload mode="basic"  customUpload="true"  (onSelect)="fileChangeListener($event)" accept="image/*" maxFileSize="1000000"   chooseLabel="เลือกรูปภาพ"></p-fileUpload>
+<img-cropper #cropper [image]="data" [settings]="cropperSettings" ></img-cropper>
+
+<span class="result rounded" *ngIf="data.image" >
+    <img [src]="data.image"    [width]="cropperSettings.croppedWidth"  [height]="cropperSettings.croppedHeight" alt="Preview">
+</span>

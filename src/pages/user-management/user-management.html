@@ -1,0 +1,182 @@
+<!--
+  Generated template for the UserManagementPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+      <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+<ion-title>จัดการบัญชีผู้ใช้งาน</ion-title>
+
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <p-growl [(value)]="msgs" styleClass="registerGrowl"></p-growl>
+    <p-panel header="จัดการบัญชีผู้ใช้งาน" [toggleable]="true">
+        <form [formGroup]="userManagementForm" (ngSubmit)="onSubmit(userManagementForm.value)">
+      
+          <button pButton type="submit" icon="fa-check" label="{{btnLabel}}" class="ui-button-primary" [disabled]="!userManagementForm.valid"></button>
+          <button pButton type="button" icon="fa-refresh" label="Reset" class="ui-button-warning" (click)="formReset()"></button>
+          <button pButton *ngIf="isModify" type="button" class="ui-button-danger" icon="fa-close" label="Cancle" (click)="cancleUpdate()"></button>
+      
+          <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+      
+            <div class="ui-grid-row">
+              <div class="ui-grid-col-2 " >
+                รหัสพนักงาน *:
+              </div>
+              <div class="ui-grid-col-4 ">
+                  <div class="ui-inputgroup">
+                  <input type="text" pInputText value="{{employeeCodeFullname}}" placeholder="รหัสพนักงาน" readonly/>
+                 <button pButton type="button" icon="fa-search"  style="width: 32px;" (click)="showDialog()"></button>        
+                </div>
+                </div>
+    
+              <div class="ui-grid-col-2">
+                วันที่เริ่มทำงาน *:
+              </div>
+              <div class="ui-grid-col-4">
+                <p-calendar formControlName="effectiveDate" 
+                [showIcon]="true" 
+                styleClass="calendarClass" 
+                [locale]="th"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true">
+              </p-calendar>
+              </div>
+              <!-- <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userManagementForm.controls['effectiveDate'].valid&&userManagementForm.controls['effectiveDate'].dirty">
+                <i class="fa fa-close"></i> กรุณากรอกวันที่เริ่มทำงาน
+              </div> -->
+            </div>
+    
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 ">
+                    ชื่อผู้ใช้งาน *:
+                  </div>
+                  <div class="ui-grid-col-4 ">
+                    <input pInputText type="text" formControlName="username" placeholder="ชื่อผู้ใช้งาน" />
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userManagementForm.controls['username'].valid&&userManagementForm.controls['username'].dirty">
+                      <i class="fa fa-close"></i> กรุณากรอกชื่อผู้ใช้งาน
+                    </div>
+                  </div>
+    
+                <div class="ui-grid-col-2 ">
+                  กลุ่มผู้ใช้งาน *:
+                </div>
+                <div class="ui-grid-col-4 ">
+                  <app-auto-complete-dropdown #autoCompleteDropdown></app-auto-complete-dropdown>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userManagementForm.controls['authorities'].valid&&userManagementForm.controls['authorities'].dirty">
+                    <i class="fa fa-close"></i> กรุณาเลือกกลุ่มผู้ใช้งาน
+                  </div>
+                </div>
+              </div>
+    
+              <div class="ui-grid-row">
+                  <div class="ui-grid-col-2 ">
+                      รหัสผ่าน *:
+                    </div>
+                    <div class="ui-grid-col-4 ">
+                      <input pPassword type="password" formControlName="password" placeholder="รหัสผ่าน"/>         
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userManagementForm.controls['password'].valid&&userManagementForm.controls['password'].dirty">
+                        <i class="fa fa-close"></i> กรุณากรอกรหัสผ่าน
+                      </div>
+                    </div>
+      
+                <div class="ui-grid-col-2 ">
+                    สถานะ *:
+                </div>
+                <div class="ui-grid-col-4 ">
+                    <p-inputSwitch onLabel="ใช้งาน" offLabel="ไม่ใช้งาน" formControlName="enabled"></p-inputSwitch>    
+                </div>
+              </div>
+          </div>
+          </form>
+      </p-panel>
+    
+      <br>
+      <p-dataTable 
+      [value]="userObj" 
+      dataKey="id" 
+      [(selection)]="selectedUser" 
+      [rows]="10" 
+      [paginator]="true"
+      [pageLinks]="5" 
+      [rowsPerPageOptions]="[5,10,20]" 
+      [lazy]="true" 
+      [totalRecords]="totalRecordsUserManagement" 
+      (onLazyLoad)="loadUserManagementLazy($event)"
+      [globalFilter]="gb" #dt>
+    
+      <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+      <p-column styleClass="col-button" [style]="{'width': '50px'}">
+        <ng-template pTemplate="header">
+          <button type="button" pButton icon="fa-trash" class="ui-button-danger" (click)="onRemove()"></button>
+        </ng-template>
+        <ng-template let-userManagementRow="rowData" pTemplate="body">
+          <button type="button" pButton (click)="selectUserManagement(userManagementRow)" icon="fa-edit"></button>
+        </ng-template>
+      </p-column>
+    
+      <p-column field="id" hidden="true" header="id"></p-column>
+      <p-column field="employeeObjectemployeeId.employeeCode" header="รหัสพนักงาน" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+      <p-column field="employeeObjectemployeeId.employeeFullName" header="ชื่อ - นามสกุล" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+      <p-column field="username" header="ชื่อผู้ใช้งาน" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+      <p-column field="authorities.authority" header="กลุ่มผู้ใช้งาน" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+      <p-column field="effectiveDate" header="วันที่เริ่มใช้งาน" [sortable]="true" [filter]="true" filterPlaceholder="คำค้นหา">
+        <ng-template let-col let-user="rowData" let-ri="rowIndex" pTemplate="body">
+          <span *ngIf = "user[col.field]">{{user[col.field] | date:'dd/MM/yyyy'}}</span>
+        </ng-template>
+      </p-column>
+    
+    <p-column field="enabled" header="สถานะ" [filter]="true" filterMatchMode="equals">
+      <ng-template pTemplate="filter" let-col>
+        <p-dropdown [options]="enabled" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-dropdown>
+      </ng-template>    
+      <ng-template let-col let-pthCol="rowData" pTemplate="body">
+              <div *ngIf="pthCol[col.field] == true ;then content else other_content">ไม่พบข้อมูล</div>
+              <ng-template #content>ใช้งาน</ng-template>
+              <ng-template #other_content>ไม่ใช้งาน</ng-template>
+            </ng-template>
+      </p-column>
+    
+    </p-dataTable>
+    
+    <p-dialog header="เลือกพนักงาน" 
+    [(visible)]="display" 
+    [width]="1080" 
+    [height]="600" 
+     modal="true">
+    
+      <p-dataTable 
+      [style]="{'margin-top':'20px'}" 
+      [value]="employeesObj" 
+      [rows]="10" 
+      [paginator]="true" 
+      [pageLinks]="5" 
+      [rowsPerPageOptions]="[5,10,20]"
+      [stacked]="stacked" 
+      [(selection)]="selectedEmployees" 
+      [lazy]="true" 
+      [totalRecords]="totalRecordsEmployee" 
+      (onLazyLoad)="loadEmployeeLazy($event)"
+      (onRowSelect)="onRowSelectEmployee($event)"
+      selectionMode="single">
+      
+     <p-column field="employeePrefix.description" header="คำนำหน้า" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column> 
+     <p-column field="employeeFullName" header="ชื่อ - นามสกุล" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+     <p-column field="employeeCode" header="รหัสพนักงาน" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+     <p-column field="employeePosition.description" header="ตำแหน่ง" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+     <p-column field="employeeDepartment.description" header="แผนก" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
+    </p-dataTable>
+    </p-dialog>
+    
+    
+</ion-content>

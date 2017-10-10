@@ -1,0 +1,87 @@
+<!-- <form [formGroup]="exampleform" (ngSubmit)="onSubmit(exampleform.value)">
+
+<h1>Table Common</h1>
+<div class="div-border">
+    <app-table #tableExample (onRowSelectEvent)="onRowSelect($event)"></app-table>
+</div>
+
+<br><h1>Dropdown Common</h1>
+<div class="div-border">
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                Dropdown Validation:
+            </div>
+            <div class="ui-grid-col-4">
+                <app-auto-complete-dropdown #autoCompleteDropdown (onSelection)="onSelection($event)"></app-auto-complete-dropdown>
+             </div>    
+             <div class="ui-grid-col-4">  
+                <div class="ui-message ui-messages-error ui-corner-all" 
+                    *ngIf="!exampleform.controls['fieldObject1'].valid&&exampleform.controls['fieldObject1'].dirty">
+                    <i class="fa fa-close"></i>
+                    Dropdown is required
+                </div>  
+             </div>  
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                Dropdown on selected item:
+            </div>
+            <div class="ui-grid-col-8">
+                <app-auto-complete-dropdown #autoCompleteDropdown2></app-auto-complete-dropdown>
+            </div>
+        </div>
+        
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                Dropdown with data object and set select item:
+            </div>
+            <div class="ui-grid-col-8">
+                <app-auto-complete-dropdown #autoCompleteDropdown3></app-auto-complete-dropdown>
+                <button-control pButton type="button" class="ui-button-warning" icon="fa-refresh" label="Reset" (click)="dropdownReset($event)"></button-control>
+                <button-control pButton type="button" class="ui-button-pimary" icon="fa-edit" label="Set select item = Test02" (click)="dropdownSetSelect('Test02')"></button-control>    
+             </div>
+        </div>
+
+</div>
+
+<br><h1>LOV Common</h1>
+<div class="div-border">
+    LOV with out input<br>
+    <button pButton label="Show" (click)="onClickBtnLOV($event)"></button> : {{labelSelect}}
+    <app-lov #lovPTHeader [(display)]="displayModalEmp" (onSelectTableRow)="onSelectTableRowInLOV($event)"></app-lov>
+<br><br>
+LOV with input
+    <div class="ui-inputgroup">
+        <input pInputText type="text" value="{{labelSelect2}}" placeholder="pHeaderCode" readonly/>
+        <button pButton type="button" icon="fa-search"  style="width: 32px;" (click)="onClickBtnLOV2($event)"></button>      
+        <app-lov #lovPTHeader2 [(display)]="displayModalEmp2" (onSelectTableRow)="onSelectTableRowInLOV2($event)"></app-lov>  
+    </div>
+</div>
+
+
+<br>
+<h1>Btn Test</h1>
+<div class="div-border">
+    <button-control pButton type="button" class="ui-button-danger" icon="fa-edit" ></button-control>
+</div>
+
+
+<br>
+<h1>Images</h1>
+<div class="div-border">
+    <cropper-image></cropper-image>
+</div>
+
+
+
+<br>
+<h1>Tree</h1>
+<div class="div-border">
+    <h3>Multiple Selection with Checkbox</h3>
+    <p-tree [value]="filesTree1" selectionMode="checkbox" [(selection)]="selectedFiles1"></p-tree>
+    <div>Selected Nodes: <span *ngFor="let file of selectedFiles1">{{file.label}} </span></div>
+</div>
+
+</form> -->
