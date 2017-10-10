@@ -128,17 +128,17 @@ export class MyApp {
                         this.result = this.tableCode.filter(
                           button => button.data.code === this.Code_add.data.code);
                         this.Object_Add = this.result.pop();
-                        sessionStorage.setItem('Btnadd', JSON.stringify(this.Object_Add.status));
+                        localStorage.setItem('Btnadd', JSON.stringify(this.Object_Add.status));
                         //Button_edit
                         this.result = this.tableCode.filter(
                           button => button.data.code === this.Code_edit.data.code);
                         this.Object_Edit = this.result.pop();
-                        sessionStorage.setItem('Btnedit', JSON.stringify(this.Object_Edit.status));
+                        localStorage.setItem('Btnedit', JSON.stringify(this.Object_Edit.status));
                         //Button_remove
                         this.result = this.tableCode.filter(
                           button => button.data.code === this.Code_remove.data.code);
                         this.Object_Remove = this.result.pop();
-                        sessionStorage.setItem('Btnremove', JSON.stringify(this.Object_Remove.status));
+                        localStorage.setItem('Btnremove', JSON.stringify(this.Object_Remove.status));
                   
                   
                   

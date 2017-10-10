@@ -12,6 +12,7 @@ import { MenuProvider } from '../providers/menu/menu';
 
 import { CommonModule } from '@angular/common';
 import { MenuAuthoritiesControlProvider } from '../providers/menu-authorities-control/menu-authorities-control';
+import { HolidayProvider } from '../providers/holiday/holiday';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MenuAuthoritiesControlProvider } from '../providers/menu-authorities-co
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     MenuProvider,
-    MenuAuthoritiesControlProvider
+    MenuAuthoritiesControlProvider,
+    HolidayProvider
   ]
 })
 export class AppModule {}

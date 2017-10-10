@@ -17,13 +17,11 @@ import { TableCode } from '../../models/TableCode';
 export class MenusPage implements OnInit {
 
   commonFnComp: CommonFunctionComponent = new CommonFunctionComponent();
-  public menuform: FormGroup;
+  menuform: FormGroup;
   msgs: Message[] = [];
   isModify: boolean = false;
   btnLabel: string = "บันทึก";
-  menu: Menu[];
-
-  menu_name = [];
+  menu: Menu[];  
 
   totalRecords: number;
   stacked: boolean;
@@ -71,9 +69,11 @@ export class MenusPage implements OnInit {
   ngOnInit() {
 
     //set Button_control
-    this.Button_Add = sessionStorage.getItem('Btnadd');
-    this.Button_Edit = sessionStorage.getItem('Btnedit');
-    this.Button_Remove = sessionStorage.getItem('Btnremove');
+    this.Button_Add = localStorage.getItem('Btnadd');
+    this.Button_Edit = localStorage.getItem('Btnedit');
+    this.Button_Remove = localStorage.getItem('Btnremove');
+
+    
 
     this.menuform = this.formBuilder.group({
       'id': new FormControl(''),
@@ -85,10 +85,7 @@ export class MenusPage implements OnInit {
       'menuIcon': new FormControl('fa fa-plus', Validators.required),
       'activeFlag': new FormControl(false),
 
-    },
-      //{validator: this.CustomValidate},
-
-    );
+    },);
     
 
 
