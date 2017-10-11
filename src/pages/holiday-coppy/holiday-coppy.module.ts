@@ -1,25 +1,24 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { HolidayPage } from './holiday';
-import { HolidayProvider } from '../../providers/holiday/holiday';
+import { HolidayCoppyPage } from './holiday-coppy';
+import { PanelModule, DataTableModule, SharedModule, CalendarModule, ButtonModule, InputTextModule, InputTextareaModule, GrowlModule, ConfirmDialogModule, AutoCompleteModule, InputSwitchModule, DropdownModule, TreeModule, DialogModule, SplitButtonModule } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { ButtonControlModule } from '../../commons/button-control/button-control.module';
-import { PanelModule } from 'primeng/components/panel/panel';
-import { ButtonModule, InputTextModule, InputTextareaModule, GrowlModule, DataTableModule, ConfirmDialogModule, RadioButtonModule, AutoCompleteModule, InputSwitchModule, DropdownModule, TreeModule, DialogModule, CalendarModule, SplitButtonModule } from 'primeng/primeng';
 import { AutoCompleteDropdownModule } from '../../commons/auto-complete-dropdown/auto-complete-dropdown.module';
+import { RadioButtonModule } from 'primeng/components/radiobutton/radiobutton';
 
 @NgModule({
   declarations: [
-    HolidayPage,
+    HolidayCoppyPage,
   ],
   imports: [
-    IonicPageModule.forChild(HolidayPage),
+    IonicPageModule.forChild(HolidayCoppyPage),
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
     ButtonControlModule,
-
+    
     PanelModule,
     ButtonModule,
     InputTextModule,
@@ -37,6 +36,5 @@ import { AutoCompleteDropdownModule } from '../../commons/auto-complete-dropdown
     SplitButtonModule,
     AutoCompleteDropdownModule
   ],
-  providers:[HolidayProvider]
 })
-export class HolidayPageModule {}
+export class HolidayCoppyPageModule {}

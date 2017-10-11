@@ -30,7 +30,7 @@
                       ชื่อวันหยุด :
                   </div>
                   <div class="ui-grid-col-5">
-                      <input pInputText type="text" formControlName="referenceHoliday" placeholder="Required" />
+                    <app-auto-complete-dropdown  #autoCompleteDropdownPosition ></app-auto-complete-dropdown>
                   </div>
                   <div class="ui-grid-col-7">
                       <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!holidayform.controls['referenceHoliday'].valid&&holidayform.controls['referenceHoliday'].dirty">
@@ -44,7 +44,8 @@
                       วันที่หยุด :
                   </div>
                   <div class="ui-grid-col-5">
-                      <input pInputText type="text" formControlName="holidayDate" placeholder="Required" />
+                      <!-- <input pInputText type="text" formControlName="holidayDate" placeholder="Required" /> -->
+                      <p-calendar formControlName="holidayDate" [showIcon]="true"></p-calendar>
                   </div>
                   <div class="ui-grid-col-7">
                       <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!holidayform.controls['holidayDate'].valid&&holidayform.controls['holidayDate'].dirty">
@@ -58,7 +59,8 @@
                       หมายเหตุ :
                   </div>
                   <div class="ui-grid-col-5">
-                      <input pInputText type="text" formControlName="description" placeholder="Required" />
+                      <!-- <input pInputText type="text" formControlName="description" placeholder="Required" /> -->
+                      <textarea pInputTextarea type="text" formControlName="description"></textarea>
                   </div>
                   <div class="ui-grid-col-7">
                       <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!holidayform.controls['description'].valid&&holidayform.controls['description'].dirty">
@@ -84,12 +86,23 @@
 
   </p-panel>
 
-  <p-panel header="ข้อมูลวันหยุดพิเศษ" [toggleable]="true" [style]="{'margin-bottom':'20px'}"> 
+  <p-panel header="ข้อมูลวันหยุดพิเศษ">
+        <p-header>
+            <button 
+            pButton type="button" 
+            label="คัดลอกวันหยุดพิเศษ" 
+            icon="fa-files-o" 
+            iconPos="right" 
+            class="pos_right"
+            (click)="coppyHoliday()"
+            ></button>
+        </p-header> 
+        
       <p-dataTable [value]="holiday" [rows]="20"  
               [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[1,5,10,20]"  
               [globalFilter]="gb" 
               [stacked]="stacked"
-              [(selection)]="selectedholiday" dataKey="id"  
+              [(selection)]="selectedholiday" dataKey="holidayId"  
               [lazy]="true"  [totalRecords]="totalRecords" (onLazyLoad)="loadLazy($event)"  
               >
               
@@ -109,8 +122,8 @@
           
           <p-column [style]="{'width':'38px'}" selectionMode="multiple" ></p-column>
           <p-column field="holidayId"            header="ไอดี เมนู"         [sortable]="true" [filter]="true" filterPlaceholder="Search" [hidden]="true"></p-column>
-          <p-column field="referenceHoliday"     header="ชื่อวันหยุด"       [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
-          <p-column field="holidayDate"          header="วันที่หยุด"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
+          <p-column field="referenceHoliday.description"     header="ชื่อวันหยุด"       [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
+          <p-column field="holidayDate"           header="วันที่หยุด"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
           <p-column field="description"          header="หมายเหตุ"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
           
           <p-column field="activeFlag"    header="สถานะการใช้งาน" [sortable]="true" >

@@ -1,10 +1,12 @@
-import { Component,OnInit } from '@angular/core';
+import { Component,OnInit, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ModalController, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HolidayProvider } from '../../providers/holiday/holiday';
 import { CommonFunctionComponent } from '../../commons/CommonFunctionComponent';
 import { Message, LazyLoadEvent } from 'primeng/primeng';
 import { Holiday } from '../../models/Holiday';
+import { DropdownOptions } from '../../commons/auto-complete-dropdown/DropdownOptions';
+import { ParameterTableDetail } from '../../models/parameter-table-detail-model';
 
 
 
@@ -14,6 +16,8 @@ import { Holiday } from '../../models/Holiday';
   templateUrl: 'holiday.html',
 })
 export class HolidayPage {
+
+  @ViewChild("autoCompleteDropdownPosition") autoCompleteDropdownPosition: any;
 
   commonFnComp: CommonFunctionComponent = new CommonFunctionComponent();
   holidayform: FormGroup;
@@ -26,6 +30,7 @@ export class HolidayPage {
   totalRecords: number;
   selectedholiday: Holiday[];
   stacked: boolean;
+  
 
   //set Button_control
   Button_Add: string;
@@ -41,10 +46,13 @@ export class HolidayPage {
     private alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public viewCtrl: ViewController
-  ) {}
+  ) {
+    
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad HolidayPage');
+    this.ngOnInit();
   }
 
   ngOnInit() {
@@ -56,17 +64,33 @@ export class HolidayPage {
 
     this.holidayform = this.formBuilder.group({
       'holidayId': new FormControl(''),
-      'holidayDate': new FormControl(),
+      'holidayDate': new FormControl(new Date,Validators.required),
       'referenceHoliday': new FormControl('',Validators.required),
       'description': new FormControl('', Validators.required),
       'activeFlag': new FormControl()
     });
+
+    this.DropdownreferenceHoliday();
+
+  }
+
+  DropdownreferenceHoliday(){
+    this.autoCompleteDropdownPosition.dropdownOptions = new DropdownOptions<ParameterTableDetail>(
+      "/api/Holiday/referenceHoliday"
+      , "TABLE_HOLIDAY"
+      , "description"
+      , "Name Holiday"
+      , this.holidayform
+      , "referenceHoliday"
+      , new FormControl('', Validators.required)
+    )
 
   }
 
   loadLazy(event: LazyLoadEvent) {
     this.holidayProvider.loadlLazy(event).then(result => {
       this.holiday = result.listOfData;
+      console.log(result);
       this.totalRecords = result.totalRecords;
     });
 
@@ -89,7 +113,7 @@ export class HolidayPage {
       this.onResetForm();
       this.msgs.push(result);
       this.isModify = false;
-      this.btnLabel = "Save";
+      this.btnLabel = "บันทึก";
       this.onReload();
     }),
       errors => {
@@ -127,6 +151,7 @@ export class HolidayPage {
   }
 
   select(holiday: Holiday) {
+    holiday.holidayDate = holiday.holidayDate? new Date(holiday.holidayDate) : null;
     console.log("Holiday", holiday);
     (<FormGroup>this.holidayform).reset(holiday, { onlySelf: true });
 
@@ -139,6 +164,12 @@ export class HolidayPage {
     this.onResetForm();
     this.isModify = false;
     this.btnLabel = "บันทึก";
+  }
+
+  coppyHoliday(){
+
+    let modal  = this.modalCtrl.create('HolidayCoppyPage');
+    modal.present();
   }
 
 }

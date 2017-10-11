@@ -164,8 +164,9 @@
                   
                   
               
-
-              <p-panel header="ข้อมูลเมนู" [toggleable]="true" [style]="{'margin-bottom':'20px'}"> 
+              <!-- <input #gb type="text" pInputText size="50" placeholder="Global Filter"> -->
+              <p-panel header="ข้อมูลเมนู" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+                    
                   <p-dataTable [value]="menu" [rows]="5"  
                           [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[1,5,10,20]"  
                           [globalFilter]="gb" 
@@ -176,7 +177,8 @@
                           
                               
                           
-                          <p-header>ตารางข้อมูลเมูนู</p-header>
+                          <p-header>ตารางข้อมูลเมนู</p-header>
+                          
                       <p-column styleClass="col-button" [style]="{'width': '50px'}">
                           <ng-template pTemplate="header">
                             <app-button-control *ngIf="Button_Remove=='true'" type="button" class="ui-button-danger" icon="fa-trash"  (onClick)="onRemove()"></app-button-control>
@@ -193,7 +195,7 @@
                       <p-column field="name"          header="ชื่อ เมนู"       [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
                       <p-column field="picturePath"   header="ภาพเมนู"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
                       <p-column field="menuIcon"      header="ไอคอน เมนู"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
-                      <p-column field="parent.name"   header="เมนูหลัก"      [sortable]="true" [filter]="true" filterPlaceholder="Search">
+                      <p-column field="parent.name"   header="เมนูหลัก"      [sortable]="true" [filter]="false" filterPlaceholder="Search">
                           
                       </p-column>
                       <p-column field="activeFlag"    header="สถานะการใช้งาน" [sortable]="true" >
