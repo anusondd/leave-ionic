@@ -26,6 +26,7 @@ export class LovContentPage implements OnInit{
     public navCtrl: NavController
     , public navParams: NavParams
     , public viewCtrl: ViewController
+    
   ) {}
   
   ngOnInit(): void {
@@ -43,7 +44,7 @@ export class LovContentPage implements OnInit{
     }
   }//end init
 
-  onRowSelect(data){
+  onRowSelect(data,{}){
     this.viewCtrl.dismiss(data);
   }
 

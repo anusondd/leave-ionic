@@ -91,7 +91,7 @@
                              <!--  <input pInputText type="text" value="{{indexForAddEmpLevel[i][j]}}" placeholder="pHeaderCode" name="'input-'+j"readonly/>
                               <button pButton type="button" icon="fa-search"  style="width: 32px;" (click)="showTableEmployee(approversLoop, approveLevelLoop, i, j)"></button>  
                               -->
-                              <common-lov #approveTypeLOV (onSelectTableRow)="onRowSelectEmployee($event, {'approversLoop':approversLoop})"></common-lov>
+                              <common-lov #approveTypeLOV (onBeforeOpenModal)="onBeforeOpenModal(approversLoop, i, j)" (onSelectTableRow)="onRowSelectEmployee($event, {'approversLoop':approversLoop, 'approveLevelLoop':approveLevelLoop, 'i':i, 'j':j})"></common-lov>
 
                             </div>
                           </div>
@@ -137,12 +137,19 @@
   
   <br>
   <!-- Table ApproveType-->
-  <!-- <p-dataTable [value]="approveTypeObj" sortMode="multiple" dataKey="approveTypeId" sortField="departmentCode.description" rowGroupMode="rowspan" [(selection)]="selectedApproveType" [rows]="10" [paginator]="true"
-    [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]" [lazy]="true" [totalRecords]="totalRecordsApproveType" (onLazyLoad)="loadLazyApproveType($event)"
-    [globalFilter]="gb" expandableRows="true" #dt> -->
-    <p-dataTable [value]="approveTypeObj" dataKey="approveTypeId"  [(selection)]="selectedApproveType" [rows]="10" [paginator]="true"
-    [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]" [lazy]="true" [totalRecords]="totalRecordsApproveType" (onLazyLoad)="loadLazyApproveType($event)"
-    [globalFilter]="gb" expandableRows="true" #dt>
+    <p-dataTable 
+    [value]="approveTypeObj" 
+    dataKey="approveTypeId"  
+    [(selection)]="selectedApproveType" 
+    [rows]="10" 
+    [paginator]="true"
+    [pageLinks]="5" 
+    [rowsPerPageOptions]="[5,10,20]" 
+    [lazy]="true" 
+    [totalRecords]="totalRecordsApproveType" 
+    (onLazyLoad)="loadLazyApproveType($event)"
+    [globalFilter]="gb" 
+    expandableRows="true" #dt>
   
     <p-header>
       <div class="ui-grid-row">
@@ -166,11 +173,17 @@
     <p-column field="departmentCode.description" header="หน่วยงาน" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา"></p-column>
     
     <p-column field="approveTypeName" header="ชื่อแบบการอนุมัติ" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา"></p-column>
-   
+    
+    <p-column field="approveLevelDetail" header="ผู้อนุมัติระดับ" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา">
+      <ng-template let-col let-pthCol="rowData" pTemplate="body">
+        <div [innerHTML]="pthCol[col.field]"></div>
+      </ng-template>
+    </p-column>
+    
 <!--     <p-column field="approveLevelDetail"  header="ผู้อนุมัติระดับ" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา"></p-column>
  -->  
     <!-- <p-column field="employee.employeePrefixFullName" header="ชื่อผู้อนุมัติ" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา"></p-column> -->
-    <p-column field="approveLevels" header="ผู้อนุมัติระดับ" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา">
+    <!-- <p-column field="approveLevels" header="ผู้อนุมัติระดับ" [sortable]="true" [filter]="true" filterPlaceholder="ค้นหา">
       <ng-template let-col let-approveLevels="rowData" let-ri="rowIndex" pTemplate="body">
         <span *ngIf="approveLevels[col.field]">
           <div *ngFor = "let obj of approveLevels[col.field]">
@@ -181,19 +194,7 @@
         </span>
       </ng-template>
     </p-column>
-  
-  
-  
-  
-  
-    <p-column styleClass="col-button" [style]="{'width': '50px'}">
-      <ng-template pTemplate="header">
-        <!-- <button type="button" pButton icon="fa-trash" class="ui-button-danger" (click)="onRemove()"></button> --></ng-template>
-      <ng-template let-approveTypeRowDownload="rowData" pTemplate="body">
-        <button type="button" pButton (click)="selectApproveTypeDownload(approveTypeRowDownload)" icon="fa fa-cloud-download"></button>
-      </ng-template>
-    </p-column>
-  </p-dataTable>
+  </p-dataTable> -->
   <!-- End Of Table ApproveType -->
   
   <!-- Table Employee -->
@@ -222,8 +223,9 @@
   </p-dialog> -->
   <!-- End of Table Employee -->
   
-<!--   <app-lov #approveTypeLOV [(display)]="displayEmployee" (onSelectTableRow)="onRowSelectEmployee($event)"></app-lov> 
-</ion-content> -->
+
+</p-dataTable>
+</ion-content>
 
 
 

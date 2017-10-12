@@ -1,3 +1,4 @@
+import { LovIonPageModule } from './../lov-ion/lov-ion.module';
 import { EmployeesProvider } from './../../providers/employees/employees';
 import { UserManagementProvider } from './../../providers/user-management/user-management';
 import { AutoCompleteDropdownModule } from './../../commons/auto-complete-dropdown/auto-complete-dropdown.module';
@@ -39,7 +40,8 @@ import { DialogModule } from 'primeng/components/dialog/dialog';
     CalendarModule,
     DropdownModule,
     AutoCompleteDropdownModule,
-    DialogModule
+    DialogModule,
+    LovIonPageModule
   ],
   providers:[UserManagementProvider,EmployeesProvider]
 })

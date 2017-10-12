@@ -17,11 +17,13 @@ import { TableCode } from '../../models/TableCode';
 export class MenusPage implements OnInit {
 
   commonFnComp: CommonFunctionComponent = new CommonFunctionComponent();
-  menuform: FormGroup;
+  public menuform: FormGroup;
   msgs: Message[] = [];
   isModify: boolean = false;
   btnLabel: string = "บันทึก";
-  menu: Menu[];  
+  menu: Menu[];
+
+  menu_name = [];
 
   totalRecords: number;
   stacked: boolean;
@@ -38,12 +40,23 @@ export class MenusPage implements OnInit {
 
   status: boolean;
 
-  
-  //set Button_control
+  //CodeButton:TableCode[];
+  result: TableCode[];
+
+  Object_Add: TableCode;
+  Object_Edit: TableCode;
+  Object_Remove: TableCode;
+  Object_Plint: TableCode;
+
   Button_Add: string;
   Button_Edit: string;
   Button_Remove: string;
   Button_Plint: string;
+
+  Code_add = { data: { code: 'Code_TABLE_AddData' }, status: 'false' };
+  Code_edit = { data: { code: 'Code_TABLE_EditData' }, status: 'false' };
+  Code_remove = { data: { code: 'Code_TABLE_RemoveData' }, status: 'false' };
+  Code_plint = { data: { code: 'Code_TABLE_PlintData' }, status: 'false' };
 
 
   constructor(
@@ -54,7 +67,41 @@ export class MenusPage implements OnInit {
     private alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public viewCtrl: ViewController
-  ) {}
+    //private confirmationService: ConfirmationService
+  ) {
+
+    
+    const tableCode = this.navParams.get('tableCode');
+    console.log('Parames', tableCode);
+
+    this.Icon = this.navParams.data;
+
+    
+
+
+    if (tableCode != null) {
+
+      //Button_add
+      this.result = tableCode.filter(
+        button => button.data.code === this.Code_add.data.code);
+      this.Object_Add = this.result.pop();
+      sessionStorage.setItem('Btnadd', JSON.stringify(this.Object_Add.status));
+      //Button_edit
+      this.result = tableCode.filter(
+        button => button.data.code === this.Code_edit.data.code);
+      this.Object_Edit = this.result.pop();
+      sessionStorage.setItem('Btnedit', JSON.stringify(this.Object_Edit.status));
+      //Button_remove
+      this.result = tableCode.filter(
+        button => button.data.code === this.Code_remove.data.code);
+      this.Object_Remove = this.result.pop();
+      sessionStorage.setItem('Btnremove', JSON.stringify(this.Object_Remove.status));
+
+
+
+    }
+
+  }
 
 
 
@@ -67,13 +114,9 @@ export class MenusPage implements OnInit {
 
 
   ngOnInit() {
-
-    //set Button_control
-    this.Button_Add = localStorage.getItem('Btnadd');
-    this.Button_Edit = localStorage.getItem('Btnedit');
-    this.Button_Remove = localStorage.getItem('Btnremove');
-
-    
+    this.Button_Add = sessionStorage.getItem('Btnadd');
+    this.Button_Edit = sessionStorage.getItem('Btnedit');
+    this.Button_Remove = sessionStorage.getItem('Btnremove');
 
     this.menuform = this.formBuilder.group({
       'id': new FormControl(''),
@@ -85,7 +128,10 @@ export class MenusPage implements OnInit {
       'menuIcon': new FormControl('fa fa-plus', Validators.required),
       'activeFlag': new FormControl(false),
 
-    },);
+    },
+      //{validator: this.CustomValidate},
+
+    );
     
 
 
@@ -221,7 +267,18 @@ export class MenusPage implements OnInit {
       console.log('result',data);
       this.menuform.controls['menuIcon'].setValue(data);
     });
+    //this.viewCtrl.getNavParams();
+    this.navParams.get('userParam');
+    console.log(this.navParams.get('userParam'));
   }
-  
+
+  setIcon(icon:string){
+    console.log("Iconnnnnn",icon);
+    this.Icon = icon;
+    this.menuform.controls['menuIcon'].setValue(icon);
+
+    console.log(this.menuform.value);
+
+  }
 
 }

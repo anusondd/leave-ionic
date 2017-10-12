@@ -1,4 +1,4 @@
 export class CoppyHoliday {
-    fromYear:string;
-    toYear  :string;
+    fromYear:number;
+    toYear  :number;
 }

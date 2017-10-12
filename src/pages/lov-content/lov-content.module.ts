@@ -10,6 +10,6 @@ import { TableModule } from '../../commons/table/table.module';
   imports: [
     IonicPageModule.forChild(LovContentPage),
     TableModule
-  ],
+  ]
 })
 export class LovContentPageModule {}

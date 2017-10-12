@@ -8,6 +8,8 @@ import { TableColumnOptions } from "../../commons/table/TableColumnOptions";
 import { DropdownOptions } from "../../commons/auto-complete-dropdown/DropdownOptions";
 import { LOVOptions } from "../../commons/lov/LOVOptions";
 import { Employees } from "../../models/Employees";
+import { AutoCompleteDropdownComponent } from '../../commons/auto-complete-dropdown/auto-complete-dropdown.component';
+import { LovIonPage } from '../lov-ion/lov-ion';
 
 /**
  * Generated class for the ExamplePage page.
@@ -27,20 +29,20 @@ export class ExamplePage {
   }
 
   ionViewDidLoad() {
-
     console.log('ionViewDidLoad ExamplePage');
   }
 
   //ngOnInit() {}
    addStatus:boolean = false;
   addStatus2:boolean = true;
-  @ViewChild("autoCompleteDropdown") autoCompleteDropdown:any;
-  @ViewChild("autoCompleteDropdown2") autoCompleteDropdown2:any;
-  @ViewChild("autoCompleteDropdown3") autoCompleteDropdown3:any;
+  @ViewChild("autoCompleteDropdown") autoCompleteDropdown:AutoCompleteDropdownComponent;
+  @ViewChild("autoCompleteDropdown2") autoCompleteDropdown2:AutoCompleteDropdownComponent;
+  @ViewChild("autoCompleteDropdown3") autoCompleteDropdown3:AutoCompleteDropdownComponent;
 
   @ViewChild('tableExample') tableExample;
-  @ViewChild('lovPTHeader') lovPTHeader;
+ /*  @ViewChild('lovPTHeader') lovPTHeader; */
   @ViewChild('lovPTHeader2') lovPTHeader2;
+  @ViewChild('lovPTHeaderIonic') lovPTHeaderIonic:LovIonPage;
   
 
   exampleform: FormGroup;
@@ -65,7 +67,7 @@ export class ExamplePage {
     //table common
     this.tableExample.tableOptions = new TableOptions<ParameterTableHeader>(
       "ptHeaderTB",
-      "/api/parameterTableHeader/loadLazy",
+      "/api/table/loadLazyParameterTableHeader",
       {},
       "pHeaderId",
       [
@@ -114,28 +116,8 @@ export class ExamplePage {
     {key:"03",name:"Test03" },
   ];
 
-  /* //lov
-  this.lovPTHeader.lovOptions = new LOVOptions<ParameterTableHeader>(
-    "เลือกพนักงาน",
-    this.exampleform,
-    "fieldObject",
-    new FormControl('', Validators.required),
-    new TableOptions<ParameterTableHeader>(
-      "ptHeaderTB",
-      "/api/parameterTableHeader/loadLazy",
-      {},
-      "pHeaderId",
-      [
-        new TableColumnOptions("pHeaderId","pHeaderId",true,true),
-        new TableColumnOptions("pHeaderCode","pHeaderCode",true,true),
-        new TableColumnOptions("pHeaderName","pHeaderName",true,true),
-        new TableColumnOptions("pHeaderDescription","pHeaderDescription",false,false)
-      ]
-    )
-  );
-
-  //lov2
-  this.lovPTHeader2.lovOptions = new LOVOptions<ParameterTableHeader>(
+  //lov
+/*   this.lovPTHeader.lovOptions = new LOVOptions<ParameterTableHeader>(
     "เลือกพนักงาน",
     this.exampleform,
     "fieldObject",
@@ -153,6 +135,48 @@ export class ExamplePage {
       ]
     )
   ); */
+
+  //lov2
+  this.lovPTHeader2.lovOptions = new LOVOptions<ParameterTableHeader>(
+    "เลือกพนักงาน",
+    this.exampleform,
+    "fieldObjectLOV",
+    "pHeaderName",
+    new FormControl('', Validators.required),
+    new TableOptions<ParameterTableHeader>(
+      "ptHeaderTB",
+      "/api/table/loadLazyParameterTableHeader",
+      {},
+      "pHeaderId",
+      [
+        new TableColumnOptions("pHeaderId","pHeaderId",true,true),
+        new TableColumnOptions("pHeaderCode","pHeaderCode",true,true),
+        new TableColumnOptions("pHeaderName","pHeaderName",true,true),
+        new TableColumnOptions("pHeaderDescription","pHeaderDescription",false,false)
+      ]
+    )
+  );
+
+  this.lovPTHeaderIonic.lovOptions = new LOVOptions<ParameterTableHeader>(
+    "Parameter Table Header",
+    this.exampleform,
+    "fieldObjectIonic",
+    "pHeaderName",
+    new FormControl('', Validators.required),
+    new TableOptions<ParameterTableHeader>(
+      "ptHeaderTB",
+      "/api/table/loadLazyParameterTableHeader",
+      {},
+      "pHeaderId",
+      [
+        new TableColumnOptions("pHeaderId","pHeaderId",true,true),
+        new TableColumnOptions("pHeaderCode","pHeaderCode",true,true),
+        new TableColumnOptions("pHeaderName","pHeaderName",true,true),
+        new TableColumnOptions("pHeaderDescription","pHeaderDescription",false,false)
+      ]
+    )
+  );
+
 
 this.filesTree1 =[
   {
@@ -230,12 +254,25 @@ console.log("selectedFile1",this.selectedFile1);
   onSelectTableRowInLOV(data){
     console.log("onSelectTableRowInLOV in example",data);
     this.labelSelect = data.pHeaderName;
-
   }
 
   onSelectTableRowInLOV2(data){
     console.log("onSelectTableRowInLOV2 in example",data);
     this.labelSelect2 = data.pHeaderName;
+  }
+
+  firstData:ParameterTableHeader = null;
+  onSelectTableRowInLOVIonic(data){
+    console.log(this.exampleform.value);
+    if(this.firstData == null){
+      this.firstData = data;
+    }
+  }
+
+  setDataLOV(){
+    this.lovPTHeaderIonic.setDataLOV(this.firstData);
+    console.log(this.exampleform.value);
+    
   }
 
   dropdownReset(data){
@@ -248,6 +285,30 @@ console.log("selectedFile1",this.selectedFile1);
     this.autoCompleteDropdown3.selectedDropdown(key);
   }
 
- 
+  brands: string[] = ['Audi','BMW','Fiat','Ford','Honda','Jaguar','Mercedes','Renault','Volvo','VW'];
+  filteredBrands: any[];
+  brand: string;
+  @ViewChild("autoComplateTry") autoComplateTry;
+
+  filterBrands(event) {
+    this.filteredBrands = [];
+    for(let i = 0; i < this.brands.length; i++) {
+        let brand = this.brands[i];
+        if(brand.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+            this.filteredBrands.push(brand);
+        }
+    }
+}
+
+dropdownSetSelect2(key){
+  console.log(this.autoComplateTry);
+  
+  //this.brand = key;
+  console.log("BF : ",this.autoComplateTry.value);
+  this.autoComplateTry.value = key;
+  this.autoComplateTry.inputFieldValue = key;
+  console.log("AF : ",this.autoComplateTry.value);
+}
+
 
 }

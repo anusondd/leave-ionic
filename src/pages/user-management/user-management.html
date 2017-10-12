@@ -33,10 +33,12 @@
                 รหัสพนักงาน *:
               </div>
               <div class="ui-grid-col-4 ">
-                  <div class="ui-inputgroup">
+                  <!-- <div class="ui-inputgroup">
                   <input type="text" pInputText value="{{employeeCodeFullname}}" placeholder="รหัสพนักงาน" readonly/>
                  <button pButton type="button" icon="fa-search"  style="width: 32px;" (click)="showDialog()"></button>        
-                </div>
+                </div> -->
+                <common-lov #userLOV></common-lov>
+                
                 </div>
     
               <div class="ui-grid-col-2">
@@ -149,7 +151,7 @@
     
     </p-dataTable>
     
-    <p-dialog header="เลือกพนักงาน" 
+    <!-- <p-dialog header="เลือกพนักงาน" 
     [(visible)]="display" 
     [width]="1080" 
     [height]="600" 
@@ -176,7 +178,7 @@
      <p-column field="employeePosition.description" header="ตำแหน่ง" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
      <p-column field="employeeDepartment.description" header="แผนก" sortable="true" [filter]="true" filterPlaceholder="คำค้นหา"></p-column>
     </p-dataTable>
-    </p-dialog>
+    </p-dialog> -->
     
     
 </ion-content>

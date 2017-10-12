@@ -118,7 +118,9 @@
             สถานะทดลองงาน:*
           </div>
           <div class="ui-grid-col-4">
-            <p-inputSwitch onLabel="ใช่" offLabel="ไม่ใช่" formControlName="probationFlag"></p-inputSwitch>
+            <p-radioButton name = "probationFlag" value="probation" label=" ระหว่างทดลองงาน" formControlName="probationFlag" (onClick)="onRadioClick('probation')"></p-radioButton>
+            <p-radioButton name = "probationFlag" value="probationPass" label=" ผ่านทดลองงาน" formControlName="probationFlag" (onClick)="onRadioClick('probationPass')"></p-radioButton>
+            <p-radioButton name = "probationFlag" value="probationFail" label=" ไม่ผ่านทดลองงาน" formControlName="probationFlag" (onClick)="onRadioClick('probationFail')"></p-radioButton>
           </div>
 
         </div>
@@ -135,15 +137,15 @@
           </div>
 
           <div class="ui-grid-col-2">
-            วันที่ลาออก:*
-          </div>
-          <div class="ui-grid-col-4">
-            <p-calendar formControlName="employeeResignDate" (onClearClick)="onClearClick()" (onSelect)="onChangeResignDate($event)"
-              [showIcon]="true" [minDate]="minDate" styleClass="calendarClass" [readonlyInput]="false" [locale]="th" dateFormat="dd/mm/yy"
-              [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030" [disabled]="disabled" placeholder="วันที่ลาออก"
-              showButtonBar="true"></p-calendar>
-          </div>
-        </div>
+              สาเหตุที่ไม่ผ่านทดลองงาน:*
+            </div>
+            <div class="ui-grid-col-4">
+              <input pInputText type="text" formControlName="causeOfProbationFail" placeholder="สาเหตุที่ไม่ผ่านทดลองงาน" />
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!employeeform.controls['causeOfProbationFail'].valid&&employeeform.controls['causeOfProbationFail'].dirty">
+                <i class="fa fa-close"></i> กรุณากรอก สาเหตุที่ไม่ผ่านทดลองงาน
+              </div>
+            </div>
+       </div>
 
         <div class="ui-grid-row">
           <div class="ui-grid-col-2">
@@ -157,18 +159,16 @@
           </div>
 
           <div class="ui-grid-col-2">
-            สาเหตุที่ออก:*
+            วันที่ลาออก:*
           </div>
           <div class="ui-grid-col-4">
-            <app-auto-complete-dropdown #autoCompleteDropdownCauseOfResign></app-auto-complete-dropdown>
-            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!employeeform.controls['causeOfResign'].valid&&employeeform.controls['causeOfResign'].dirty">
-              <i class="fa fa-close"></i> กรุณาเลือก สาเหตุที่ออก
-            </div>
+            <p-calendar formControlName="employeeResignDate" (onClearClick)="onClearClick()" (onSelect)="onChangeResignDate($event)"
+              [showIcon]="true" [minDate]="minDate" styleClass="calendarClass" [readonlyInput]="false" [locale]="th" dateFormat="dd/mm/yy"
+              [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030" [disabled]="disabled" placeholder="วันที่ลาออก"
+              showButtonBar="true"></p-calendar>
           </div>
 
         </div>
-
-
 
         <div class="ui-grid-row">
           <div class="ui-grid-col-2">
@@ -182,10 +182,13 @@
           </div>
 
           <div class="ui-grid-col-2">
-            สถานะ:*
+            สาเหตุที่ออก:*
           </div>
           <div class="ui-grid-col-4">
-            <p-inputSwitch onLabel="ใช้งาน" offLabel="ไม่ใช้งาน" formControlName="activeFlag"></p-inputSwitch>
+            <app-auto-complete-dropdown #autoCompleteDropdownCauseOfResign></app-auto-complete-dropdown>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!employeeform.controls['causeOfResign'].valid&&employeeform.controls['causeOfResign'].dirty">
+              <i class="fa fa-close"></i> กรุณาเลือก สาเหตุที่ออก
+            </div>
           </div>
 
 
@@ -202,11 +205,11 @@
             </div>
           </div>
 
-          <div class="ui-grid-col-2" *ngIf="isModify">
-            อายุงาน:*
+          <div class="ui-grid-col-2">
+            สถานะ:*
           </div>
           <div class="ui-grid-col-4">
-            <b>{{workingAge}}</b>
+            <p-inputSwitch onLabel="ใช้งาน" offLabel="ไม่ใช้งาน" formControlName="activeFlag"></p-inputSwitch>
           </div>
 
         </div>
@@ -216,21 +219,32 @@
             ที่อยู่:*
           </div>
           <div class="ui-grid-col-4">
-
             <textarea pInputTextarea type="text" formControlName="employeeAddress" placeholder="ที่อยู่"></textarea>
           </div>
 
-          <div class="ui-grid-col-2" *ngIf="isModify">
-            สถานะการปฏิบัติงาน:*
-          </div>
-          <div class="ui-grid-col-4" *ngIf="isModify">
-            <b *ngIf="workStatus == null" style="color:yellow;">{{workStatusText}}</b>
-            <b *ngIf="workStatus == true" style="color:green;">{{workStatusText}}</b>
-            <b *ngIf="workStatus == false" style="color:red;">{{workStatusText}}</b>
-          </div>
+          <div class="ui-grid-col-6 ui-grid-nopad">
+            <div class="ui-grid-col-4" *ngIf="isModify">
+              อายุงาน:*
+            </div>
+            <div class="ui-grid-col-4">
+              <b>{{workingAge}}</b>
+            </div>
 
+            <div class="ui-grid-col-12">
+              <br>
+            </div>
 
+            <div class="ui-grid-col-4 " *ngIf="isModify">
+              สถานะการปฏิบัติงาน:*
+            </div>
+            <div class="ui-grid-col-4 " *ngIf="isModify">
+              <b *ngIf="workStatus == null" style="color:#FD6811;">{{workStatusText}}</b>
+              <b *ngIf="workStatus == true" style="color:green;">{{workStatusText}}</b>
+              <b *ngIf="workStatus == false" style="color:red;">{{workStatusText}}</b>
+            </div>
+          </div>
         </div>
+
       </div>
     </form>
   </p-panel>
@@ -244,7 +258,8 @@
 
       <p-column styleClass="col-button" [style]="{'width':'50px'}" header="Action">
         <ng-template pTemplate="header">
-          <button type="button" pButton icon="fa-trash" class="ui-button-danger" (click)="onRemove()"></button></ng-template>
+          <button type="button" pButton icon="fa-trash" class="ui-button-danger" (click)="onRemove()"></button>
+        </ng-template>
         <ng-template let-employee="rowData" pTemplate="body">
           <button type="button" pButton (click)="selectEmployee(employee)" icon="fa-edit"></button>
         </ng-template>

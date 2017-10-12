@@ -40,14 +40,14 @@ export class EmployeesPage implements OnInit {
   employeeResignDate: any;
   employeeStartDate: any;
   th: any;
-
+  disabledCauseOfProbationfail = false;
   currentDate: Date;
   workingAge: string
   workStatus: boolean = null;
   workStatusText: string = "";
   btnLabel = "Save";
   isModify = false;
-
+  probationFlag: string;
   selectedEmployees: Employees[];
   employeesObj: Employees[];
   datatest: {};
@@ -92,11 +92,12 @@ export class EmployeesPage implements OnInit {
       'employeeStartDate': new FormControl('', Validators.required),
       'employeeResignDate': new FormControl(''),
       'identificationNumber': new FormControl('', Validators.required),
-      'probationFlag': new FormControl(true),
+      'probationFlag': new FormControl('', Validators.required),
+      'causeOfProbationFail': new FormControl(''),
     });
     this.autoCompleteDropdownPrefix.dropdownOptions = new DropdownOptions<ParameterTableDetail>(
       "/api/dropdown/employee"
-      , "TABLE_NAME_PREFIX_TYPE"
+      , { "tableCode": "TABLE_NAME_PREFIX_TYPE" }
       , "description"
       , "ค้นหา 'คำนำหน้า'"
       , this.employeeform
@@ -105,7 +106,7 @@ export class EmployeesPage implements OnInit {
     ),
       this.autoCompleteDropdownPosition.dropdownOptions = new DropdownOptions<ParameterTableDetail>(
         "/api/dropdown/employee"
-        , "TABLE_POSITION_TYPE"
+        , { "tableCode": "TABLE_POSITION_TYPE" }
         , "description"
         , "ค้นหา 'ตำแหน่ง'"
         , this.employeeform
@@ -114,7 +115,7 @@ export class EmployeesPage implements OnInit {
       ),
       this.autoCompleteDropdownDepartment.dropdownOptions = new DropdownOptions<ParameterTableDetail>(
         "/api/dropdown/employee"
-        , "TABLE_DEPARTMENT_TYPE"
+        , { "tableCode": "TABLE_DEPARTMENT_TYPE" }
         , "description"
         , "ค้นหา 'หน่วยงาน/แผนก'"
         , this.employeeform
@@ -123,14 +124,19 @@ export class EmployeesPage implements OnInit {
       ),
       this.autoCompleteDropdownCauseOfResign.dropdownOptions = new DropdownOptions<ParameterTableDetail>(
         "/api/dropdown/employee"
-        , "TABLE_CAUSE_OF_VALUE_TYPE"
+        , { "tableCode": "TABLE_CAUSE_OF_VALUE_TYPE" }
         , "description"
         , "ค้นหา 'สาเหตุที่ออก'"
         , this.employeeform
         , "causeOfResign"
         , new FormControl('')
       )
+    this.employeeform.controls['probationFlag'].setValue('probation');
+    this.employeeform.controls['causeOfProbationFail'].disable();
+
+
   }
+
 
   onSubmit(value: Employees) {
     this.msgs = [];
@@ -153,7 +159,7 @@ export class EmployeesPage implements OnInit {
 
 
   onRemove() {
-    let component :EmployeesPage = this
+    let component: EmployeesPage = this
     this.commonFnComp.ConfirmDialog(component, this.alertCtrl,
       function () {
         component.employeesService.removeEmployee(component.selectedEmployees)
@@ -186,7 +192,16 @@ export class EmployeesPage implements OnInit {
   }
 
   selectEmployee(employee: Employees) {
+    var emp = employee;
+    this.autoCompleteDropdownPrefix.selectedDropdown(employee.employeePrefix.description);
+    this.autoCompleteDropdownPosition.selectedDropdown(employee.employeePosition.description);
+    this.autoCompleteDropdownDepartment.selectedDropdown(employee.employeeDepartment.description);
+    if (emp.causeOfResign == null) {
+    } else {
+      this.autoCompleteDropdownCauseOfResign.selectedDropdown(employee.causeOfResign.description);
+    }
 
+    //this.employeeform.controls["employeePrefix"].setValue(emp.employeePrefix.description);
     employee.employeeStartDate = employee.employeeStartDate ? new Date(employee.employeeStartDate) : null;
     employee.employeeResignDate = employee.employeeResignDate ? new Date(employee.employeeResignDate) : null;
 
@@ -208,6 +223,12 @@ export class EmployeesPage implements OnInit {
       this.diffDate = this.calDiffDate(employee.employeeStartDate, employee.employeeResignDate);
     }
 
+    if (employee.causeOfProbationFail == null) {
+      this.employeeform.controls['causeOfProbationFail'].disable();
+    } else {
+      this.employeeform.controls['causeOfProbationFail'].enable();
+
+    }
 
   }
 
@@ -222,6 +243,10 @@ export class EmployeesPage implements OnInit {
     this.minDate = null;
     this.maxDate = null;
     this.workingAge = ""
+    this.autoCompleteDropdownPrefix.resetDropdown();
+    this.autoCompleteDropdownPosition.resetDropdown();
+    this.autoCompleteDropdownDepartment.resetDropdown();
+    this.autoCompleteDropdownCauseOfResign.resetDropdown();
   }
 
   cancleUpdate() {
@@ -235,7 +260,6 @@ export class EmployeesPage implements OnInit {
 
   loadEmployeesLazy(event: LazyLoadEvent) {
     this.globalEvent = event;
-
 
     this.employeesService.loadLazyEmployee(event).then(result => {
 
@@ -320,6 +344,16 @@ export class EmployeesPage implements OnInit {
     }
 
     return diffDate;
+  }
+
+  onRadioClick(data) {
+    if (data == "probationFail") {
+      this.employeeform.controls['causeOfProbationFail'].enable();
+
+    } else {
+      this.employeeform.controls['causeOfProbationFail'].disable();
+    }
+
   }
 
 }

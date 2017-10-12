@@ -6,59 +6,55 @@ import { Menu } from '../../models/Menu';
 import { CommonOptions } from '../../commons/CommonOptions';
 import { TreeNode, LazyLoadEvent, Message } from 'primeng/primeng';
 import { MenuAuthorities } from '../../models/MenuAuthorities';
-
-let headers = new Headers({ 'Content-Type': 'application/json' });
-let options = new RequestOptions({ headers: headers });
-
+import { CommonProvider } from '../common/common';
 
 let rootPath = "/api/Menu/";
-//new
-
-
-
 @Injectable()
 export class MenuProvider {
 
-  constructor(public http: Http) {
+  constructor(
+    //public http: Http,
+    private commonService: CommonProvider) {
     console.log('Hello MenuProvider Provider');
   }
 
 
-    common = new CommonFunction(this.http);
+   // common = new CommonFunction(this.http);
   
     saveOrUpdate(formValue: Menu, isModify: boolean):Promise<Menu> {
       var path = isModify ? "update" : "save";
-      return this.common.post(new CommonOptions(rootPath + path, formValue));   
+      return this.commonService.post(new CommonOptions(rootPath + path, formValue));   
   
     }  
     
   
     loadMenu() {
   
-      return this.common.post(new CommonOptions(rootPath + "loadAll", {}));
+      return this.commonService.post(new CommonOptions(rootPath + "loadAll", {}));
       
     }
   
     loadTreemenu(){
-      return this.http.post('/api/Menu/loadTree', {}, options).toPromise()
-      .then(res => <TreeNode[]> res.json().data);
+      return this.commonService.postTree(new CommonOptions(rootPath + "loadTree", {}));
+      /* this.http.post('/api/Menu/loadTree', {}, options).toPromise()
+      .then(res => <TreeNode[]> res.json().data); */
     }
   
     loadMenulLazy(Lazy: LazyLoadEvent) {
           console.log(Lazy.filters);
-          return this.common.post(new CommonOptions(rootPath+"loadLazy", Lazy));
+          return this.commonService.post(new CommonOptions(rootPath+"loadLazy", Lazy));
     }
   
     onRemovemenu(menu: Menu[]): Promise<Message> {
-      return this.common.post(new CommonOptions(rootPath + "delete", menu));
+      return this.commonService.post(new CommonOptions(rootPath + "delete", menu));
     }
 
     findAuthority(){
-      return this.common.post(new CommonOptions(rootPath + "findAuthority", {}));
+      return this.commonService.post(new CommonOptions(rootPath + "findAuthority", {}));
     }
 
     findMenuAuthority(formValue:MenuAuthorities){
-      return this.common.post(new CommonOptions(rootPath + "findMenuAuthority",formValue));
+      return this.commonService.post(new CommonOptions(rootPath + "findMenuAuthority",formValue));
     }
       
   

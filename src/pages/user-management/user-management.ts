@@ -1,3 +1,8 @@
+import { AutoCompleteDropdownComponent } from './../../commons/auto-complete-dropdown/auto-complete-dropdown.component';
+import { TableOptions } from './../../commons/table/TableOptions';
+import { LOVOptions } from './../../commons/lov/LOVOptions';
+import { LovIonPage } from './../lov-ion/lov-ion';
+import { TableColumnOptions } from './../../commons/table/TableColumnOptions';
 import { EmployeesProvider } from './../../providers/employees/employees';
 import { CommonFunctionComponent } from './../../commons/CommonFunctionComponent';
 import { UserManagementProvider } from './../../providers/user-management/user-management';
@@ -29,6 +34,8 @@ import { Employees } from '../../models/Employees';
 export class UserManagementPage  implements OnInit {
   
     @ViewChild("autoCompleteDropdown") autoCompleteDropdown: any;
+    @ViewChild("userLOV") userLOV: LovIonPage;
+
     msgs: Message[] = [];
   
     /* User */
@@ -56,7 +63,8 @@ export class UserManagementPage  implements OnInit {
     constructor(private fb: FormBuilder,
       private usersManagementService: UserManagementProvider,
       private alertCtrl:AlertController,
-      private employeesService: EmployeesProvider) { }
+     // private employeesService: EmployeesProvider
+    ) { }
   
     ngOnInit() {
       this.userManagementForm = this.fb.group({
@@ -91,7 +99,27 @@ export class UserManagementPage  implements OnInit {
       this.enabled.push({label: 'ทั้งหมด', value: null});
       this.enabled.push({label: 'ใช้งาน', value: true});
       this.enabled.push({label: 'ไม่ใช้งาน', value: false});
-      
+
+      this.userLOV.lovOptions = new LOVOptions<Employees>(
+        "เลือกพนักงาน"
+        ,this.userManagementForm
+        , "employeeObjectemployeeId"
+        , "employeePrefixFullName"
+        , new FormControl('')
+        , new TableOptions<Employees>(
+          "Employee"
+          , "/api/employee/loadLazyEmployeeForLOV"
+          , {}
+          , "id"
+          , [
+            new TableColumnOptions("employeePrefix.description", "คำนำหน้า", true, true),
+            new TableColumnOptions("employeeFullName", "ชื่อ - นามสกุล", true, true),
+            new TableColumnOptions("employeeCode", "รหัสพนักงาน", true, true),
+            new TableColumnOptions("employeePosition.description", "ตำแหน่ง", true, true),
+            new TableColumnOptions("employeeDepartment.description", "แผนก", true, true),
+          ]
+        )
+      );
     }
   
     onSubmit(value: Usermanagement) {
@@ -103,41 +131,42 @@ export class UserManagementPage  implements OnInit {
           this.cancleUpdate();
           this.msgs.push(result);
           this.loadUserManagementLazy(this.globalEventUsermanageMent);
-          this.loadEmployeeLazy(this.globalEventEmployee);
-          this.employeeCodeFullname = null;
+/*           this.loadEmployeeLazy(this.globalEventEmployee);
+ */          this.employeeCodeFullname = null;
         },
         errors => {
           let error = errors.json();
           this.msgs.push(error);
           this.loadUserManagementLazy(this.globalEventUsermanageMent);
-          this.loadEmployeeLazy(this.globalEventEmployee);
-        });
+/*           this.loadEmployeeLazy(this.globalEventEmployee);
+ */        });
   
     }
   
     onRemove() {
-      /* this.commonFnComp.ConfirmDialog(this.alertCtrl,
+      let component :UserManagementPage = this;
+      this.commonFnComp.ConfirmDialog(component,this.alertCtrl,
         function(){      
-          this.usersManagementService.removeUserManagement(this.selectedUser)
+          component.usersManagementService.removeUserManagement(component.selectedUser)
             .then(
             result => {
-              this.formReset();
-              this.selectedUser = [];
-              this.msgs.push(result);
-              this.loadUserManagementLazy(this.globalEventUsermanageMent);
-              this.loadEmployeeLazy(this.globalEventEmployee);
-            },
+              component.formReset();
+              component.selectedUser = [];
+              component.msgs.push(result);
+              component.loadUserManagementLazy(component.globalEventUsermanageMent);
+/*               component.loadEmployeeLazy(component.globalEventEmployee);
+ */            },
             errors => {
               let error = errors.json();
-              this.msgs.push(error);
-              this.loadUserManagementLazy(this.globalEventUsermanageMent);
-              this.loadEmployeeLazy(this.globalEventEmployee);
-            }
+              component.msgs.push(error);
+              component.loadUserManagementLazy(component.globalEventUsermanageMent);
+/*               component.loadEmployeeLazy(component.globalEventEmployee);
+ */            }
             );
         },
         null
       );
-       */
+      
       }
   
     loadUserManagementLazy(event: LazyLoadEvent) {
@@ -151,49 +180,55 @@ export class UserManagementPage  implements OnInit {
   
     formReset() {
       (<FormGroup>this.userManagementForm).reset({});;
+
       this.employeeCodeFullname = null;
       this.btnLabel = "Save";
       this.isModify = false;
+      this.autoCompleteDropdown.resetDropdown();
     }
   
     cancleUpdate() {
       this.formReset();
       this.btnLabel = "Save";
       this.isModify = false;
+     
     }
   
-    showDialog() {
+  /*   showDialog() {
       this.display = true;
-    }
+    } */
   
-    loadEmployeeLazy(event: LazyLoadEvent) {
+/*     loadEmployeeLazy(event: LazyLoadEvent) {
       this.globalEventEmployee = event;    
-      this.employeesService.loadLazyEmployeeForLOV(event).then(result => {
+       this.employeesService.loadLazyEmployeeForLOV(event).then(result => {
         this.employeesObj = result.listOfData;
         this.totalRecordsEmployee = result.totalRecords;
-      });
+      }); 
   
-    }
+    } */
   
-    onRowSelectEmployee(event) {
+/*     onRowSelectEmployee(event) {
       console.log(event.data);
       this.userManagementForm.controls['employeeObjectemployeeId'].setValue(event.data);
-      this.employeeCodeFullname = event.data.employeeCode + " : "+ event.data.employeePrefix.description +" "+ event.data.employeeFullName;
-      
+       this.employeeCodeFullname = event.data.employeeCode + " : "+ event.data.employeePrefix.description +" "+ event.data.employeeFullName;
+       
       this.btnLabel = "Save";
       this.isModify = false;
       this.display = false;
-    }
+    } */
   
-    selectUserManagement(value: Usermanagement){
-      console.log(value.effectiveDate);
-      
+    selectUserManagement(value){
+
+      this.autoCompleteDropdown.selectedDropdown(value.authorities.authority);
+      console.log(value);
       this.employeeCodeFullname = value.employeeObjectemployeeId.employeePrefixFullName;
       value.effectiveDate = value.effectiveDate ? new Date(value.effectiveDate):null;
       
       (<FormGroup>this.userManagementForm).reset(value);
       this.btnLabel = "Update";
       this.isModify = true;
+
+      
     }
   
   }

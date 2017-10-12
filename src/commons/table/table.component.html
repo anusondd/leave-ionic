@@ -3,7 +3,7 @@
   dataKey="{{tableOptions.dataKey}}"
   [(selection)]="tableOptions.selectedObject"
   selectionMode="tableOptions.selectionMode"
-  (onRowSelect)="onRowSelect($event)" 
+  (onRowSelect)="onRowSelect($event,{})" 
 
   [rows]="tableOptions.rows" 
   [paginator]="tableOptions.paginator"

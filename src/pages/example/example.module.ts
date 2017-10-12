@@ -9,7 +9,7 @@ import { AutoCompleteDropdownModule } from "../../commons/auto-complete-dropdown
 import { LovModule } from "../../commons/lov/lov.module";
 import { ImageModule } from "../../commons/cropper-image/image.module";
 import { ButtonControlModule } from "../../commons/button-control/button-control.module";
-import { ExampleProvider } from './example-service';
+import { ExampleProvider } from "../../providers/example/example";
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
 import { LovIonPageModule } from '../lov-ion/lov-ion.module';
 

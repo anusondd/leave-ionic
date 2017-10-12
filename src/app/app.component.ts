@@ -6,10 +6,13 @@ import { TreeNode } from 'primeng/primeng';
 import { MenuProvider } from '../providers/menu/menu';
 import { MenuAuthorities } from '../models/MenuAuthorities';
 import { Menu } from '../models/Menu';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Authorities } from '../models/Authorities';
 import { MenuAuthoritiesControlProvider } from '../providers/menu-authorities-control/menu-authorities-control';
-import { TableCode } from '../models/TableCode';
+import { AuthenticationProvider } from '../providers/auth/authentication';
+import { HomePage } from '../pages/home/home';
+import { LoginPage } from '../pages/login/login';
+import { JwtHelper } from 'angular2-jwt';
 
 
 @Component({
@@ -20,7 +23,7 @@ export class MyApp {
 
   isPageExpands:number[]=[];
   files: TreeNode[];
-  rootPage: string = 'MenuAuthoritiesPage';
+  rootPage: any = null;
 
   pages: Array<{title: string, component: any}> = [];
 
@@ -35,39 +38,55 @@ export class MyApp {
   MenuAuthoritiesform: FormGroup;
   MenuAuthoritiesControl: FormGroup;
 
-  result: TableCode[];
-  
-    Object_Add: TableCode;
-    Object_Edit: TableCode;
-    Object_Remove: TableCode;
-    Object_Plint: TableCode;
-  
-    
-  
-    Code_add = { data: { code: 'Code_TABLE_AddData' }, status: 'false' };
-    Code_edit = { data: { code: 'Code_TABLE_EditData' }, status: 'false' };
-    Code_remove = { data: { code: 'Code_TABLE_RemoveData' }, status: 'false' };
-    Code_plint = { data: { code: 'Code_TABLE_PlintData' }, status: 'false' };
-
-  
+  user:String;
+  page:String;
 
   constructor(public platform: Platform, public statusBar: StatusBar
     , public splashScreen: SplashScreen
     , private menuService : MenuProvider
     , public loadingCtrl: LoadingController
     , private formBuilder: FormBuilder
-    , private menuAuthorityControlService : MenuAuthoritiesControlProvider) {
+    , private menuAuthorityControlService : MenuAuthoritiesControlProvider
+    , private authProvider: AuthenticationProvider,
+    jwtHelper: JwtHelper,) {
     this.initializeApp();
     
-    this.menuService.loadTreemenu().then(files => {
-      console.log(files);
-      this.files= files;
-    });
-    this.menuService.findAuthority().then(Authority => { 
-      this.authorities = Authority;
-      console.log('UserType :',this.authorities)
-   });
+    console.log("Hello");
+    authProvider.authUser.subscribe(jwt => {
+      console.log("jwt : ",jwt);
+      
+      if (jwt) {
 
+        //load menu
+        this.menuService.loadTreemenu().then(files => {
+          console.log(files);
+          this.files= files;
+        });
+        this.menuService.findAuthority().then(Authority => { 
+          this.authorities = Authority;
+          console.log('UserType :',this.authorities)
+        });
+
+        //get username
+        this.authProvider.authUser.subscribe(jwt => {
+            if (jwt) {
+              const decoded = jwtHelper.decodeToken(jwt);
+              this.user = decoded.sub
+            }else {
+              this.user = null;
+            }
+          });
+
+        this.page = "Home";
+        this.rootPage = HomePage;
+      }else {
+        console.log("LoginPage");
+        this.page = "Login";
+        this.rootPage = LoginPage;
+      }
+    });
+
+    authProvider.checkLogin();
   }
 
   initializeApp() {
@@ -92,13 +111,8 @@ export class MyApp {
   }
 
   openPage(tree) {
-
-    
-
     this.MenuAuthoritiesform.controls['authorities'].setValue(this.authorities);
     console.log('authorities :',this.MenuAuthoritiesform.value);
-    
-
     this.MenuAuthoritiesform.controls['menus'].setValue(tree.data);    
 
     
@@ -113,41 +127,22 @@ export class MyApp {
         duration: 3000,
         dismissOnPageChange: true
       }).present();
+
+
       if(this.MenuAuthoritiesform.controls['menus'].value!=null){
           console.log('authorities+menus :',this.MenuAuthoritiesform.value);
         this.menuService.findMenuAuthority(this.MenuAuthoritiesform.value)
           .then(MenuAuthoritie =>{
             this.menuAuthorities = MenuAuthoritie; 
             console.log('menuAuthorities :',this.menuAuthorities);
-              this.MenuAuthoritiesControl.controls['menuAuthority'].setValue(this.menuAuthorities);
-              this.menuAuthorityControlService.loadCodeTable(this.MenuAuthoritiesControl.value).then(result =>{
-                this.tableCode = result;
-                if (this.tableCode != null) {
-                  
-                        //Button_add
-                        this.result = this.tableCode.filter(
-                          button => button.data.code === this.Code_add.data.code);
-                        this.Object_Add = this.result.pop();
-                        localStorage.setItem('Btnadd', JSON.stringify(this.Object_Add.status));
-                        //Button_edit
-                        this.result = this.tableCode.filter(
-                          button => button.data.code === this.Code_edit.data.code);
-                        this.Object_Edit = this.result.pop();
-                        localStorage.setItem('Btnedit', JSON.stringify(this.Object_Edit.status));
-                        //Button_remove
-                        this.result = this.tableCode.filter(
-                          button => button.data.code === this.Code_remove.data.code);
-                        this.Object_Remove = this.result.pop();
-                        localStorage.setItem('Btnremove', JSON.stringify(this.Object_Remove.status));
-                  
-                  
-                  
-                      }
-                
-                console.log("tableCode",this.tableCode);
-                //this.nav.setRoot(tree.data.link, { tableCode : this.tableCode }); 
-                this.nav.setRoot(tree.data.link); 
-              }) 
+            this.MenuAuthoritiesControl.controls['menuAuthority'].setValue(this.menuAuthorities);
+            this.menuAuthorityControlService.loadCodeTable(this.MenuAuthoritiesControl.value).then(result =>{
+              this.tableCode = result;
+              console.log("tableCode",this.tableCode);
+
+              this.page = tree.data.name;
+              this.nav.setRoot(tree.data.link, { tableCode : this.tableCode }); 
+            }) 
                       
         });
         
@@ -188,5 +183,9 @@ export class MyApp {
     return (isShow&&this.hasClassExpand);
   }
 
+
+  logout() {
+    this.authProvider.logout();
+  }
 
 }

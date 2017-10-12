@@ -5,6 +5,7 @@ import { CommonFunction } from '../../commons/CommonFunction';
 import { Holiday } from '../../models/Holiday';
 import { CommonOptions } from '../../commons/CommonOptions';
 import { LazyLoadEvent, Message } from 'primeng/primeng';
+import { CoppyHoliday } from '../../models/Coppy-holiday';
 
 let rootPath = "/api/Holiday/";
 @Injectable()
@@ -35,5 +36,10 @@ export class HolidayProvider {
     
         return this.common.post(new CommonOptions(rootPath + "loadAll", {}));
         
+  }
+
+  HolidayReq(Year:CoppyHoliday){
+
+    return this.common.post(new CommonOptions(rootPath + "HolidayReq", Year));
   }
 }

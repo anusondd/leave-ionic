@@ -59,10 +59,11 @@
 
       </div>
     </p-panel>
-    <p-panel header="บันทึกการลา" [toggleable]="true">
+    <p-panel header="ข้อมูลพนักงาน" [toggleable]="true">
 
       <button pButton type="submit" [disabled]="!leavedetailform.valid" class="ui-button-primary" icon="fa-check" label="บันทึกตรวจสอบ"></button>
       <button pButton type="button" class="ui-button-danger" icon="fa-close" label="ยกเลิก" (click)="cancleUpdate()"></button>
+      <button pButton type="button" class="ui-button-success" icon="fa-close" label="modal" (click)="openModal(leavedetailform.value)"></button>
 
       <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
         <p-growl class="ui-growl" [value]="msgs"></p-growl>
@@ -121,7 +122,7 @@
             <p-radioButton *ngIf="leaveOneDay == false" name="timeEndFlag" value="ALLDAY" label=" ทั้งวัน 08.30-17.30 น." formControlName="timeEndFlag"></p-radioButton>
 
             <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!leavedetailform.controls['timeEndFlag'].valid&&leavedetailform.controls['timeEndFlag'].dirty">
-              <i class="fa fa-close"></i> กรุณากรอก เวลาที่สิ้นสุดลา
+              <i class="fa fa-close"></i> กรุณาเลือก เวลาที่สิ้นสุดลา
             </div>
           </div>
         </div>
@@ -157,23 +158,6 @@
 
   <p-panel header="ข้อมูลการลา" [toggleable]="true">
     <p-tabView (onChange)="onTabChange($event)">
-      <p-tabPanel header="ข้อมูลลาทั้งหมด" [selected]="true">
-        <!-- <div class="ui-g">
-          <p-dataTable [style]="{'margin-top':'20px'}" [value]="leaveDetailObj" [rows]="10" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]"
-            [stacked]="stacked" [(selection)]="selectionLeaveDetail" [lazy]="true" [totalRecords]="totalRecords" (onLazyLoad)="loadLeaveDetailLazyAll($event)">
-            <p-header>List of leave Detail</p-header>
-            <p-column field="employee.employeeFullName" header="ชื่อ-นามสกุล" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
-            <p-column field="employee.employeeDepartment.description" header="หน่วยงาน/แผนก" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
-            <p-column field="leaveType.leaveTypeName" header="ประเภทการลา" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
-            <p-column field="dateStartDesc" header="วันที่เริ่มลา" sortable="true" [filter]="true" filterPlaceholder="Search">
-            </p-column>
-            <p-column field="dateEndDesc" header="วันที่สิ้นสุดการลา" sortable="true" [filter]="true" filterPlaceholder="Search">
-            </p-column>
-            <p-column field="dateOfLeave" header="วันลา" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
-          </p-dataTable>
-
-        </div> -->
-      </p-tabPanel>
       <p-tabPanel header="ข้อมูลการลาของฉัน">
         <div class="ui-g">
           <p-dataTable [style]="{'margin-top':'20px'}" [value]="leaveDetailObj" [rows]="10" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]"
@@ -183,15 +167,8 @@
             <p-column field="employee.employeeFullName" header="ชื่อ-นามสกุล" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
             <p-column field="employee.employeeDepartment.description" header="หน่วยงาน/แผนก" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
             <p-column field="leaveType.leaveTypeName" header="ประเภทการลา" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
-            <p-column field="dateStartDesc" header="วันที่เริ่มลา" sortable="true" [filter]="true" filterPlaceholder="Search">
-              <!-- <ng-template let-col let-pthCol="rowData" pTemplate="body">
-                <span *ngIf="pthCol[col.field]">{{pthCol[col.field] | date: 'dd/MM/yyyy'}} {{leaveTimeStartCheck(pthCol['timeStartFlag'])}}
-                </span>
-              </ng-template> -->
-            </p-column>
-            <p-column field="dateEndDesc" header="วันที่สิ้นสุดการลา" sortable="true" [filter]="true" filterPlaceholder="Search">
-            </p-column>
-
+            <p-column field="dateStartDesc" header="วันที่เริ่มลา" sortable="true" [filter]="true" filterPlaceholder="Search"> </p-column>
+            <p-column field="dateEndDesc" header="วันที่สิ้นสุดการลา" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
             <p-column field="dateOfLeave" header="วันลา" sortable="true" [filter]="true" filterPlaceholder="Search"></p-column>
 
 

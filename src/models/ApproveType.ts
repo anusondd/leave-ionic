@@ -6,4 +6,6 @@ export class ApproveType{
     departmentCode: ParameterTableDetail;
     activeFlag: boolean;
     approveLevels: ApproveLevel[];
+    approveTypedDpartment: string;
+    approveLevelDetail: string;
 }

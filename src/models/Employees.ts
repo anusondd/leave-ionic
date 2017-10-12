@@ -1,6 +1,7 @@
+import { ParameterTableDetail } from "./parameter-table-detail-model";
+
 export class Employees {
 
-    employeePosition: string;
     employeeStartDate: Date;
     employeeResignDate: Date;
     employeeId: number;
@@ -9,11 +10,15 @@ export class Employees {
     employeeLastName: string;
     emailAddress: string;
     employeeTelNo: string;
-    employeePrefix: string;
     activeFlag: boolean;
     employeeFullName: string;
     employeePrefixFullName: string;
-    probationFlag: boolean;
+    probationFlag: string;
     workStatusText: string;
     workingAge: string;
+    employeePrefix: ParameterTableDetail;
+    employeePosition: ParameterTableDetail;
+    employeeDepartment: ParameterTableDetail;
+    causeOfResign: ParameterTableDetail;
+    causeOfProbationFail: string;
 }

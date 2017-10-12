@@ -35,7 +35,10 @@ export class IconmenuPage {
   selectIcon(icon){
     this.icon= 'fa fa-'+icon;
     console.log('Icon......',this.icon);
+    //this.menusPage.ngOnInit();
+    //this.menusPage.setIcon(this.icon);
     this.viewCtrl.dismiss(this.icon);
+    //this.icon = this.navParams.data;
     
   }
 

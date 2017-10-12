@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { LazyLoadEvent } from 'primeng/components/common/lazyloadevent';
 import { Employees } from '../../models/Employees';
 import { ParameterTableDetail } from '../../models/parameter-table-detail-model';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { LeaveDetail } from '../../models/leave-detail';
 import { LeaveDetailProvider } from '../../providers/leave-detail/leave-detail';
 import { EmployeesProvider } from '../../providers/employees/employees';
@@ -12,7 +12,8 @@ import { CommonFunctionComponent } from '../../commons/CommonFunctionComponent';
 import { LeaveType } from '../../models/leave-type';
 import { ParameterTableDetailProvider } from '../../providers/parameter-table-detail/parameter-table-detail';
 import { LazyLoadEventRequestWithObject } from '../../models/LazyLoadEventRequestWithObject';
-
+import { AutoCompleteDropdownComponent } from '../../commons/auto-complete-dropdown/auto-complete-dropdown.component';
+import { ModalController } from 'ionic-angular';
 /**
  * Generated class for the LeaveDetailPage page.
  *
@@ -38,12 +39,14 @@ export class LeaveDetailPage {
   th: { firstDayOfWeek: number; dayNames: string[]; dayNamesShort: string[]; dayNamesMin: string[]; monthNames: string[]; monthNamesShort: string[]; };
   currentDate: Date;
 
-  @ViewChild("autoCompleteDropdownLeavetype") autoCompleteDropdownLeavetype: any;
-  @ViewChild("autoCompleteDropdownEmployee") autoCompleteDropdownEmployee: any;
+  @ViewChild("autoCompleteDropdownLeavetype") autoCompleteDropdownLeavetype: AutoCompleteDropdownComponent;
+  @ViewChild("autoCompleteDropdownEmployee") autoCompleteDropdownEmployee: AutoCompleteDropdownComponent;
 
-  employeesObject: Employees;
+
+  probation: boolean;
+  employeesObject: Employees = null;
   dateOfLeave: number;
-  probation: any;
+
   statusA00: ParameterTableDetail;
   diffDate: string;
   leaveTypeCondition: any;
@@ -65,7 +68,7 @@ export class LeaveDetailPage {
   constructor(public formBuilder: FormBuilder, public leaveDetailService: LeaveDetailProvider,
     public employeesService: EmployeesProvider, private alertCtrl: AlertController,
     private parameterTableDetailService: ParameterTableDetailProvider, public navCtrl: NavController,
-    public navParams: NavParams) {
+    public navParams: NavParams, private modal: ModalController) {
 
   }
 
@@ -87,7 +90,7 @@ export class LeaveDetailPage {
       'dateStart': new FormControl('', Validators.required),
       'dateEnd': new FormControl('', Validators.required),
       'timeStartFlag': new FormControl('', Validators.required),
-      'timeEndFlag': new FormControl(''),
+      'timeEndFlag': new FormControl('', this.ValidateTimeEndFlag.bind(this)),
       'description': new FormControl('', Validators.required),
     });
 
@@ -107,32 +110,30 @@ export class LeaveDetailPage {
      }); */
 
 
-    this.parameterTableDetailService.loadParameterTableDetail("A00").then(result => {
-      this.statusA00 = result[0];
-      this.leavedetailform.addControl("leaveStatus", new FormControl(''));
-      this.leavedetailform.controls['leaveStatus'].setValue(this.statusA00);
-    });
 
 
+    this.autoCompleteDropdownEmployee.dropdownOptions = new DropdownOptions<Employees>(
+      "/api/dropdown/allemp"
+      , {}
+      , "employeeCode"
+      , "ค้นหา 'ค้นหาพนักงาน'"
+      , this.leavedetailform
+      , "employee"
+      , new FormControl('')
+    );
 
     this.autoCompleteDropdownLeavetype.dropdownOptions = new DropdownOptions<LeaveType>(
       "/api/dropdown/leavetype"
-      , true
+      , { "probationFlag": null }
       , "leaveTypeName"
       , "ค้นหา 'ประเภทการลา'"
       , this.leavedetailform
       , "leaveType"
       , new FormControl('', Validators.required)
-    ),
-      this.autoCompleteDropdownEmployee.dropdownOptions = new DropdownOptions<Employees>(
-        "/api/dropdown/allemp"
-        , {}
-        , "employeeCode"
-        , "ค้นหา 'ค้นหาพนักงาน'"
-        , this.leavedetailform
-        , "employee"
-        , new FormControl('')
-      )
+    );
+
+
+
   }
 
   onSubmit(value: LeaveDetail) {
@@ -144,14 +145,18 @@ export class LeaveDetailPage {
 
         this.cancleUpdate();
         this.msgs.push(result);
-        this.loadLeaveDetailLazy(this.globalEvent);
+        // this.loadLeaveDetailLazy(this.globalEvent);
         this.loadLeaveDetailLazyEmployee(this.globalEvent);
+        this.leaveOneDay = null;
+        this.leaveMoreDay = null;
       },
       errors => {
         let error = errors.json();
         this.msgs.push(error)
-        this.loadLeaveDetailLazy(this.globalEvent);
+        //  this.loadLeaveDetailLazy(this.globalEvent);
         this.loadLeaveDetailLazyEmployee(this.globalEvent);
+        this.leaveOneDay = null;
+        this.leaveMoreDay = null;
       }
       );
   }
@@ -161,6 +166,8 @@ export class LeaveDetailPage {
     this.disabled = true;
     this.minDate = null;
     this.maxDate = null;
+    this.leaveOneDay = null;
+    this.leaveMoreDay = null;
   }
 
   resetForm() {
@@ -175,16 +182,46 @@ export class LeaveDetailPage {
     this.leavedetailform.controls['dateEnd'].setValue("");
     this.leaveOneDay = null;
     this.leaveMoreDay = null;
+
+    this.parameterTableDetailService.loadParameterTableDetail("A00").then(result => {
+      this.statusA00 = result[0];
+      this.leavedetailform.addControl("leaveStatus", new FormControl(''));
+      this.leavedetailform.controls['leaveStatus'].setValue(this.statusA00);
+    });
+
   }
 
   onSelectEmployeecode(data) {
-    console.log(data);
+    //console.log(data);
     this.employeesObject = data;
+    var startDate = new Date(this.employeesObject.employeeStartDate);
+    if (this.employeesObject.employeeResignDate > this.currentDate) {
+      var endDate = new Date();
+    } else {
+      var endDate = new Date(this.employeesObject.employeeResignDate);
+    }
+    this.WorkingYear = common.getDiffYear(startDate, endDate);
 
+    if (this.employeesObject.probationFlag == "probation") {
+      this.probation = true;
+    } else if (this.employeesObject.probationFlag == "probationPass") {
+      this.probation = false;
+    }else if (this.employeesObject.probationFlag == "probationFail") {
+      this.probation = null;
+    }
+    //   this.probationFlag = this.employeesObject.probationFlag;
+    this.autoCompleteDropdownLeavetype.reloadDropdown(
+      {
+        "probationFlag": this.probation
+      });
+
+      this.loadLeaveDetailLazyEmployee(this.globalEvent);
   }
 
   disabled = true;
   onChangeDateStart(data: any) {
+    this.leavedetailform.controls['timeStartFlag'].reset();
+    this.leavedetailform.controls['timeEndFlag'].reset();
     this.minDate = data;
     this.leaveOneDay = null;
     this.leaveMoreDay = null;
@@ -221,22 +258,26 @@ export class LeaveDetailPage {
   }
 
   onChangeDateEnd(data: any) {
+
+    this.leavedetailform.controls['timeStartFlag'].reset();
+    this.leavedetailform.controls['timeEndFlag'].reset();
     this.endLeaveDate = data;
     this.endLeaveDateString = this.getStringDate(this.endLeaveDate);
 
     if (this.endLeaveDateString == this.startLeaveDateString) {
       this.leaveOneDay = true;
+
     } else {
       this.leaveOneDay = false;
+      this.leavedetailform.controls['timeStartFlag'].setValue('AFTERNOON');
+      this.leavedetailform.controls['timeEndFlag'].setValue('MORNING');
     } // ลาวันเดียว
 
     if (this.startLeaveDate < this.endLeaveDate) {
       this.leaveMoreDay = true;
-      /* this.leavedetailform.controls['timeEndFlag'].setValidators();
-      this.leavedetailform.controls['timeEndFlag'].markAsDirty(); */
-
     } else {
       this.leaveMoreDay = false;
+      this.leavedetailform.controls['timeStartFlag'].setValue('MORNING');
     } // ลามากกว่า 1 วัน
   }
 
@@ -264,7 +305,6 @@ export class LeaveDetailPage {
 
   loadLeaveDetailLazyEmployee(event: LazyLoadEvent) {
     this.globalEvent = event;
-
     let lazyWithObj = new LazyLoadEventRequestWithObject(event, this.employeesObject, null);
     this.leaveDetailService.loadLazyLeaveDetailEmployee(lazyWithObj).then(result => {
       this.leaveDetailObj = result.listOfData;
@@ -280,7 +320,6 @@ export class LeaveDetailPage {
 
   loadLeaveDetailLazyAll(event: LazyLoadEvent) {
     this.globalEvent = event;
-
     let lazyWithObj = new LazyLoadEventRequestWithObject(event, this.employeesObject, null);
     this.leaveDetailService.loadLazyLeaveDetailAll(lazyWithObj).then(result => {
       this.leaveDetailObj = result.listOfData;
@@ -323,20 +362,38 @@ export class LeaveDetailPage {
     return
   }
 
-
-
   onTabChange(event) {
     if (event.index == 0) {
-      /* this.loadLeaveDetailLazyAll(this.globalEvent); */
-    } else if (event.index == 1) {
       this.loadLeaveDetailLazyEmployee(this.globalEvent);
     } else {
 
     }
 
+  }
+
+  ValidateTimeEndFlag(control: AbstractControl) {
+
+    console.log("startLeaveDate :", this.startLeaveDate, ", endLeaveDate :", this.endLeaveDate, ", value : ", control.value);
+    if (this.startLeaveDate < this.endLeaveDate && !control.dirty) {
+      control.markAsDirty();
+      control.setValidators([Validators.required]);
+      return { ValidateTimeEndFlag: { valid: false } };
+    } else {
+
+      control.clearValidators();
+      return { ValidateTimeEndFlag: { valid: true } };
+    }
+
 
   }
 
+  openModal(value: LeaveDetail) {
+    console.log(value);
+
+    const conModal = this.modal.create('LeaveDetailConfirmPage', { data: value });
+
+    conModal.present();
+  }
 
 
 }

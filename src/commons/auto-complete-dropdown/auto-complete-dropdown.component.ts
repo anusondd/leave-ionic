@@ -22,7 +22,7 @@ export class AutoCompleteDropdownComponent implements OnInit {
 
   ngOnInit() {
     if(this.dropdownOptions.path != ""){
-      this.reloadEmployeeDropdown();
+      this.reloadDropdown(null);
     }
     let formControl:FormControl = this.dropdownOptions.formControl == null?
                                   new FormControl('', Validators.required)//if
@@ -31,7 +31,10 @@ export class AutoCompleteDropdownComponent implements OnInit {
     this.dropdownOptions.formGroup.addControl(this.dropdownOptions.fieldFormGroup,formControl);
   }
 
-  reloadEmployeeDropdown(){
+  reloadDropdown(postData:any){
+    if(postData != null){
+      this.dropdownOptions.postData = postData;
+    }
     this.autoCompleteService.loadDataDropdown(this.dropdownOptions).then(result => {
       this.dropdownOptions.dataList = result;
     });	
@@ -73,7 +76,7 @@ export class AutoCompleteDropdownComponent implements OnInit {
     this.value = "Child";
     this.getValueChange.emit(this.value);
      let fieldLabel = eval("object."+this.dropdownOptions.fieldLabel);
-    this.onSelection.emit(fieldLabel)
+    this.onSelection.emit(data)
     
   }
 
@@ -89,7 +92,7 @@ export class AutoCompleteDropdownComponent implements OnInit {
       console.log("data",data);
       
       this.dropdownOptions.formGroup.controls[this.dropdownOptions.fieldFormGroup].setValue(data);
-      this.autoCompleteCommon.inputFieldValue = object.pHeaderCode;
+      this.autoCompleteCommon.inputFieldValue = eval("object."+this.dropdownOptions.fieldLabel);
 
   }
   

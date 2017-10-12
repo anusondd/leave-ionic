@@ -1,7 +1,7 @@
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar>
-      <ion-title>Menu</ion-title>
+      <ion-title>Leave Online</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -40,3 +40,20 @@
 </ion-menu>
 
 <ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+
+<ion-header>
+  <ion-navbar>
+      <button ion-button menuToggle *ngIf="page != 'Login'">
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    <ion-title>{{page}}</ion-title>
+    <ion-buttons end *ngIf="page != 'Login'">
+      <div style="padding-top: 17px;">
+        <b>{{user}}</b>
+        <button ion-button icon-only (click)="logout()" style="padding-bottom: 15px;">
+          <ion-icon name="exit"></ion-icon>
+        </button>
+    </div>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>

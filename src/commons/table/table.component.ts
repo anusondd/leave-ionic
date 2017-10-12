@@ -43,7 +43,7 @@ export class TableComponent implements OnInit {
     this.loadDataTableLazy(this.tableOptions.lazyLoadEvents.loadLazyEvent);
   }
 
-  onRowSelect(event:any){
+  onRowSelect(event:any,{}){
     this.onRowSelectEvent.emit(event.data);
   }
 }
