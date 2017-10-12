@@ -45,7 +45,7 @@
                   </div>
                   <div class="ui-grid-col-5">
                       <!-- <input pInputText type="text" formControlName="holidayDate" placeholder="Required" /> -->
-                      <p-calendar formControlName="holidayDate" [showIcon]="true"></p-calendar>
+                      <p-calendar formControlName="holidayDate" [showIcon]="true" [locale]="th" dateFormat="dd/mm/yy" ></p-calendar>
                   </div>
                   <div class="ui-grid-col-7">
                       <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!holidayform.controls['holidayDate'].valid&&holidayform.controls['holidayDate'].dirty">
@@ -123,7 +123,11 @@
           <p-column [style]="{'width':'38px'}" selectionMode="multiple" ></p-column>
           <p-column field="holidayId"            header="ไอดี เมนู"         [sortable]="true" [filter]="true" filterPlaceholder="Search" [hidden]="true"></p-column>
           <p-column field="referenceHoliday.description"     header="ชื่อวันหยุด"       [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
-          <p-column field="holidayDate"           header="วันที่หยุด"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
+          <p-column field="holidayDate"           header="วันที่หยุด"      [sortable]="true" [filter]="true" filterPlaceholder="Search">
+            <ng-template let-col let-hld="rowData" let-ri="rowIndex" pTemplate="body">
+                <span *ngIf="hld[col.field]">{{hld[col.field] | date: 'dd/MM/yyyy'}}</span>
+            </ng-template>
+          </p-column>
           <p-column field="description"          header="หมายเหตุ"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
           
           <p-column field="activeFlag"    header="สถานะการใช้งาน" [sortable]="true" >

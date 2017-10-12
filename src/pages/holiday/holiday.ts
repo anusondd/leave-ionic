@@ -38,6 +38,9 @@ export class HolidayPage {
   Button_Remove: string;
   Button_Plint: string;
 
+  th: any;
+  currentDate: Date;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -62,6 +65,18 @@ export class HolidayPage {
     this.Button_Edit    = localStorage.getItem('Btnedit');
     this.Button_Remove  = localStorage.getItem('Btnremove');
 
+    this.currentDate = new Date();
+    this.th = {
+      firstDayOfWeek: 0,
+      dayNames: ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+      dayNamesShort: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+      dayNamesMin: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+      monthNames: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+      monthNamesShort: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."],
+      today: 'Today',
+      clear: 'Clear'
+    };
+
     this.holidayform = this.formBuilder.group({
       'holidayId': new FormControl(''),
       'holidayDate': new FormControl(new Date,Validators.required),
@@ -70,11 +85,6 @@ export class HolidayPage {
       'activeFlag': new FormControl()
     });
 
-    this.DropdownreferenceHoliday();
-
-  }
-
-  DropdownreferenceHoliday(){
     this.autoCompleteDropdownPosition.dropdownOptions = new DropdownOptions<ParameterTableDetail>(
       "/api/Holiday/referenceHoliday"
       , "TABLE_HOLIDAY"
@@ -86,6 +96,8 @@ export class HolidayPage {
     )
 
   }
+
+  
 
   loadLazy(event: LazyLoadEvent) {
     this.holidayProvider.loadlLazy(event).then(result => {
