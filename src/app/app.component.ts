@@ -111,9 +111,11 @@ export class MyApp {
   }
 
   openPage(tree) {
-    this.MenuAuthoritiesform.controls['authorities'].setValue(this.authorities);
+
+
+    /* this.MenuAuthoritiesform.controls['authorities'].setValue(this.authorities);
     console.log('authorities :',this.MenuAuthoritiesform.value);
-    this.MenuAuthoritiesform.controls['menus'].setValue(tree.data);    
+    this.MenuAuthoritiesform.controls['menus'].setValue(tree.data);  */   
 
     
     if(tree.children.length>0 && tree.data.link == '#' && tree.data.link == ''){
@@ -129,7 +131,7 @@ export class MyApp {
       }).present();
 
 
-      if(this.MenuAuthoritiesform.controls['menus'].value!=null){
+      /* if(this.MenuAuthoritiesform.controls['menus'].value!=null){
           console.log('authorities+menus :',this.MenuAuthoritiesform.value);
         this.menuService.findMenuAuthority(this.MenuAuthoritiesform.value)
           .then(MenuAuthoritie =>{
@@ -148,7 +150,7 @@ export class MyApp {
         
         
       
-      }
+      } */
        
     }
     

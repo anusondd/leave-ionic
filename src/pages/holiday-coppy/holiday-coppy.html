@@ -1,0 +1,81 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>คัดลอกวันหยุดพิเศษ</ion-title>
+  </ion-navbar>
+  <button ion-button (click)="dismiss()" class="pos_right">
+      <span ion-text >ยกเลิก</span>
+  </button>
+</ion-header>
+<ion-content padding>
+
+    <p-panel header="คัดลอกวันหยุดพิเศษ" [toggleable]="true">
+        <form [formGroup]="coppyHolidayform" (ngSubmit)="onSubmit(coppyHolidayform.value)">
+             
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2">
+                    คัดลอกจาก ปี:
+                </div>
+                <div class="ui-grid-col-5">
+                    <input pInputText type="text" formControlName="fromYear" placeholder="Required" />
+                </div>
+                <div class="ui-grid-col-7">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!coppyHolidayform.controls['fromYear'].valid&&coppyHolidayform.controls['fromYear'].dirty">
+                        <i class="fa fa-close"></i> กรุณากรอกข้อมูล
+                    </div>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2">
+                    มา ปี:
+                </div>
+                <div class="ui-grid-col-5">
+                    <input pInputText type="text" formControlName="toYear" placeholder="Required" />
+                </div>
+                <div class="ui-grid-col-7">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!coppyHolidayform.controls['toYear'].valid&&coppyHolidayform.controls['toYear'].dirty">
+                        <i class="fa fa-close"></i> กรุณากรอกข้อมูล
+                    </div>
+                </div>
+            </div>
+            <button pButton type="submit" label="คัดลอก" icon="fa-files-o" iconPos="right"  [disabled]="!coppyHolidayform.valid"></button> 
+
+        </form>
+    </p-panel>
+
+    <p-panel header="ตารางข้อมูลวันหยุดพิเศษ">
+        <p-header>
+            <button 
+            pButton type="button" 
+            label="บันทึกข้อมูล"
+            class="ui-button-success pos_right"
+            (click)="coppyHoliday()"
+            ></button>
+        </p-header> 
+        <p-dataTable [value]="holiday" [editable]="true" [(selection)]="selectedholiday" dataKey="holidayId" >
+            <p-column [style]="{'width':'38px'}" selectionMode="multiple" ></p-column>
+            <p-column field="holidayId"                        header="ไอดี เมนู"      [sortable]="true" [filter]="true" filterPlaceholder="Search" [hidden]="true"></p-column>
+            <p-column field="referenceHoliday.description"     header="ชื่อวันหยุด"     [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
+            <p-column field="holidayDate"                      header="วันที่หยุด"      [editable]="true" [style]=" {'overflow':'visible' }">
+                <!-- <ng-template let-col let-holiday="rowData" pTemplate="body">
+                    {{holiday[col.field]}}
+               </ng-template>
+               <ng-template let-col let-holiday="rowData" pTemplate="editor">
+                   <p-calendar [(ngModel)]="holiday[col.field]" appendTo="body"></p-calendar>
+               </ng-template> -->
+            </p-column>
+            <p-column field="description"                      header="หมายเหตุ"      [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
+            
+            <p-column field="activeFlag"    header="สถานะการใช้งาน" [sortable]="true" >
+                    <ng-template let-col let-pthCol="rowData" pTemplate="body">                   
+                        <div *ngIf="pthCol[col.field];then content else other_content">ไม่พบข้อมูล</div>                   
+                        <ng-template #content>ใช้งาน</ng-template>
+                        <ng-template #other_content>ไม่ใช้งาน</ng-template>
+                    </ng-template>
+            </p-column>
+
+        </p-dataTable>
+    </p-panel>
+
+</ion-content>
